@@ -60,7 +60,19 @@ ________________________________________________________________________________
 #CREATE A LIST OF SOLUTIONS AND SAVE IT AS EXTERNAL FILE
 
 def equilibrium_solution_list(lamb):
-    mu_list = np.arange(0.76, 0.79, 0.0005)
+    # Create the two ranges
+    mu_list = np.arange(0,0.7,0.01)
+    mu_list = np.append(mu_list, np.arange(0.75, 0.8, 0.0001))
+    mu_list = np.append(mu_list, np.arange(0.8+0.001, 1.1, 0.001))
+    # Remove 0.8 by filtering it out
+    # mu_coarse = mu_coarse[mu_coarse != 0.8]
+
+
+
+    # Merge without duplicates
+    # mu_list = np.union1d(mu_fine, mu_coarse)
+
+    print(mu_list)
     ubar_pos = []
     ubar_neg = []
     for mu in mu_list:
@@ -200,7 +212,7 @@ def snapshot(lambd,pe,flow,mu,eps):
 #
 flow = 'rankine'
 # flow ='sinusoidal'
-snapshot(0.8,145,flow, 0.775,0.357)
+# snapshot(0.8,145,flow, 0.775,0.357)
 #
 """
 _________________________________________________________________________________________________________________________________________
@@ -264,7 +276,7 @@ ________________________________________________________________________________
 #PLOT SOLUTION FROM FILE AND ZERO FLOW
 def plot_solution(lamb, eps):
     # Read data from file
-    mu_values, ubar_pos, ubar_neg = np.loadtxt(f'ubar_values{lamb:.4f}.dat', unpack=True)
+    mu_values, ubar_pos, ubar_neg = np.loadtxt(f'../Data/ubar_values{lamb:.4f}.dat', unpack=True)
 
     # Create the plot
     plt.figure(figsize=(8, 6))
@@ -284,30 +296,21 @@ def plot_solution(lamb, eps):
     # plt.fill_between(mu_values, 0, y_max, where=(mu_values >= 1), color='red', alpha=0.3, hatch='//'
     #                  )
 
-    base_folder = f"lambda{lamb}/128_eps{eps:.3f}"
+    base_folder = f"../Data/gaussian/lambda{lamb}/128_eps{eps:.3f}"
     rho_ = []
 
-    mu_list = []
-    for i in range(81):
-        m = i * 0.001 + 0.74
-        m1 = 0.79
 
-        dm = m-m1
-        dm2 = m - 0.82
-        if dm != 0 and dm2 != 0:
-            mu_list.append(m)
-        else:
-            pass
+    mu_list = [i * 0.0002 + 0.7644 for i in range(79)]
 
 
     flow = 'sinusoidal'
-    pe = 0
+    pe = 270
     # mu_list.remove(0.800)
     print(mu_list)
     for mu in tqdm(mu_list):
         print(mu)
         # index = np.where(mu_values == round(mu, 3))[0]
-        file_path = f'{base_folder}/{flow}_Pe{pe:.1f}_mu{mu:.4f}/dat.h5'  # Change this to your .h5 file path
+        file_path = f'{base_folder}/{flow}_Pe{pe:.1f}_mu{mu:.5f}/dat.h5'  # Change this to your .h5 file path
         f = h5py.File(file_path, 'r')
         density = f[f'density_'][-2000:]
         rho_.append(np.mean(density))
@@ -340,7 +343,7 @@ ________________________________________________________________________________
 #PLOT SOLUTION AND ANY FLOW
 def plot_solutions(lamb, eps):
     # Read data from file
-    mu_values, ubar_pos, ubar_neg = np.loadtxt(f'ubar_values{lamb:.4f}.dat', unpack=True)
+    mu_values, ubar_pos, ubar_neg = np.loadtxt(f'../Data/ubar_values{lamb:.4f}.dat', unpack=True)
 
     # Create the plot
     plt.figure(figsize=(8, 6))
@@ -353,25 +356,18 @@ def plot_solutions(lamb, eps):
     plt.title(r'Equilibrium Solutions, $\lambda =$ ' f'{lamb}')
     plt.grid(True)
 
-    base_folder = f"lambda{lamb}/128_eps{eps:.3f}"
+    base_folder = f"../Data/gaussian/lambda{lamb}/128_eps{eps:.3f}"
     rho_ = []
     rho10 = []
     rho100 = []
-    mu_list = []
-    for i in range(61):
-        m = i * 0.0005 + 0.76
-        # m1 = 0.787
 
-        # dm = m - m1
-        # dm2 = m - 0.82
-        # if dm != 0 and dm2 != 0:
-        mu_list.append(m)
+    mu_list = [i * 0.0002 + 0.7644 for i in range(79)]
 
     for mu in mu_list:
         flow = 'sinusoidal'
         pe = 0
         index = np.where(mu_values == round(mu, 4))[0]
-        file_path = f'{base_folder}/{flow}_Pe{pe:.1f}_mu{mu:.4f}/dat.h5'  # Change this to your .h5 file path
+        file_path = f'{base_folder}/{flow}_Pe{pe:.1f}_mu{mu:.5f}/dat.h5'  # Change this to your .h5 file path
         f = h5py.File(file_path, 'r')
         density = f[f'density_'][-2000:]
         rho_.append(np.mean(density)/ubar_pos[index])
@@ -380,9 +376,9 @@ def plot_solutions(lamb, eps):
     #########################################
     for mu in mu_list:
         flow = 'sinusoidal'
-        pe = 200
+        pe = 270
         index = np.where(mu_values == round(mu, 4))[0]
-        file_path = f'{base_folder}/{flow}_Pe{pe:.1f}_mu{mu:.4f}/dat.h5'  # Change this to your .h5 file path
+        file_path = f'{base_folder}/{flow}_Pe{pe:.1f}_mu{mu:.5f}/dat.h5'  # Change this to your .h5 file path
         f = h5py.File(file_path, 'r')
         density = f[f'density_'][-2000:]
         rho100.append(np.mean(density)/ubar_pos[index])
@@ -391,9 +387,9 @@ def plot_solutions(lamb, eps):
     ###################################
     for mu in mu_list:
         flow = 'sinusoidal'
-        pe = 60
+        pe = 210
         index = np.where(mu_values == round(mu, 4))[0]
-        file_path = f'{base_folder}/{flow}_Pe{pe:.1f}_mu{mu:.4f}/dat.h5'  # Change this to your .h5 file path
+        file_path = f'{base_folder}/{flow}_Pe{pe:.1f}_mu{mu:.5f}/dat.h5'  # Change this to your .h5 file path
         f = h5py.File(file_path, 'r')
         density = f[f'density_'][-2000:]
         rho10.append(np.mean(density)/ubar_pos[index])
@@ -404,9 +400,9 @@ def plot_solutions(lamb, eps):
     rho10s= []
     for mu in mu_list:
         flow = 'sinusoidal'
-        pe = 70
+        pe = 220
         index = np.where(mu_values == round(mu, 4))[0]
-        file_path = f'{base_folder}/{flow}_Pe{pe:.1f}_mu{mu:.4f}/dat.h5'  # Change this to your .h5 file path
+        file_path = f'{base_folder}/{flow}_Pe{pe:.1f}_mu{mu:.5f}/dat.h5'  # Change this to your .h5 file path
         f = h5py.File(file_path, 'r')
         density = f[f'density_'][-2000:]
         rho10s.append(np.mean(density)/ubar_pos[index])

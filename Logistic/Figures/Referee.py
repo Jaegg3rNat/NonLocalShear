@@ -8,7 +8,9 @@ from scipy.special import j1 as Bj1
 from random import sample
 import matplotlib.ticker as tkr
 from tqdm import tqdm
-
+# Overall Details
+rc('font', **{'family': 'serif', 'serif': ['Computer Modern']})
+rc('text', usetex=True)
 def carrying(mu,pe,w,file,v):
     base_folder = file
     velocity_field_name = v
@@ -23,22 +25,32 @@ def carrying(mu,pe,w,file,v):
     k = f['density'][:]/r
     x = f['time'][:]
     return x, k
-Pe = []
-dq02 = []
-dq005 = []
-mu = 450
-for i in range(36):
-    Pe.append(i)
-for pe in Pe:
-    _,k =carrying(mu,pe,0,'../Data/q_0.2Data','rankine')
-    _,k1 =carrying(mu,pe,0,'../Data/q_0.05Data','rankine')
-    dq02.append(np.mean(k))
-    dq005.append(np.mean(k1))
 
-plt.plot(Pe,dq02,'.-', label = 'q0.2')
-plt.plot(Pe,dq005,'.-', label = 'q0.05')
-plt.xlabel('Pe')
-plt.ylabel(' Time Average of Normalize Population Density ')
-plt.title(f'Da={mu}')
-plt.legend()
+# Define the two values of mu you want to compare
+mu_values = [280, 450]  # Example: change 350 to another value if desired
+
+Pe = [5 + i for i in range(30)]
+Pe.append(0)
+Pe.sort()
+
+fig, axs = plt.subplots(1, 2, figsize=(12, 5), sharey=True)
+
+for ax, mu in zip(axs, mu_values):
+    dq02 = []
+    dq005 = []
+
+    for pe in Pe:
+        _, k = carrying(mu, pe, 0, '../Data/q0.2', 'rankine')
+        _, k1 = carrying(mu, pe, 0, '../Data/q0.05', 'rankine')
+        dq02.append(np.mean(k))
+        dq005.append(np.mean(k1))
+
+    ax.plot(Pe, dq02, '.-', label='a=0.2')
+    ax.plot(Pe, dq005, '.-', label='a=0.05')
+    ax.set_xlabel(r'Characteristic Péclet, $\mbox{Pe}$', fontsize=15)
+    ax.set_title(f'Da = {mu}',fontsize = 16)
+    ax.legend(fontsize = 12)
+
+axs[0].set_ylabel('Time-averaged \n normalized population abundance', fontsize=15)
+plt.tight_layout()
 plt.show()

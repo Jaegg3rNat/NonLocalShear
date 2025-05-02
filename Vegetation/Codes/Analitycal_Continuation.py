@@ -29,12 +29,13 @@ ________________________________________________________________________________
 # %% Functions
 def initial_config(lamb, eps, pe, mu):
     mub = mu  # - 0.01
-    base_folder1 = f"lambda{lamb}/128_eps{eps:.3f}"
-    file_path = f'{base_folder1}/sinusoidal_Pe{0:.1f}_mu{0.7685:.4f}/dat.h5'  # Change this to your .h5 file path
+    base_folder1 = f"../Data/gaussian/lambda{lamb}/128_eps{eps:.3f}"
+    file_path = f'{base_folder1}/sinusoidal_Pe{pe:.1f}_mu{mu:.5f}/dat.h5'  # Change this to your .h5 file path
     f = h5py.File(file_path, 'r')
     u = f[f't'][:]
 
     return u
+
 
 
 def tophat_kernel(dx, radius):
@@ -290,7 +291,8 @@ def pv_field_domain3(x_, y_, strengths, bounds, periodic_repeats=2):
         x and y components of the velocity field.
     """
     L = bounds[1] - bounds[0]
-    q = 3*dx  # Cutoff radius based on domain size
+    q = 4*dx  # Cutoff radius based on domain size
+    # q= 0.05*L
 
     vx = np.zeros_like(x_)
     vy = np.zeros_like(x_)
@@ -495,7 +497,7 @@ for g in gamma:
     # ________________________________________________________________________________________________________
 
     # Create path for saving results based on nx value and flow parameters
-    path = f"{lattice_size_dir}/{flow_type}_Pe{Pe:.1f}_mu{mu:.4f}"
+    path = f"{lattice_size_dir}/{flow_type}_Pe{Pe:.1f}_mu{mu:.5f}"
     if not os.path.exists(path):
         os.makedirs(path)
 
@@ -558,7 +560,7 @@ for g in gamma:
     # Random fluctuations around equilibrium (±5% of ubar)
     # fluctuation_amplitude = 0.05
     # u0 = float(ubar)*(1 + fluctuation_amplitude * (2*np.random.rand(nx, ny) - 1))
-    u0 = initial_config(delta, eps, pe, mu)
+    u0 = initial_config(delta, eps, pe, 0.7698)
     u = np.copy(u0)
     # print(u0)
     #
@@ -614,31 +616,31 @@ for g in gamma:
         if n == 15001:
             break
 
-        # # # Save data set configuration
-        # if n % 5000 == 0:
-        #     #     #     # Create HDF5 dataset for the current timestep
-        #     #     #     h5file.create_dataset(f"t{round(t[n], 3)}", data=u)
-        #     #     #
-        #     #     ### Plot
-        #     plt.subplots(1, 2, figsize=(10, 5))
-        #     plt.subplots_adjust(wspace=0.05)
-        #     plt.subplot(1, 2, 1)
-        #     plt.imshow(u.T, cmap="gnuplot", origin="lower", extent=np.concatenate((bounds, bounds)))
-        #     plt.colorbar(ticks=np.linspace(np.min(u), np.min(u) + 0.9 * (np.max(u) - np.min(u)), 7))
-        #     #
-        #     plt.xlim([bounds[0], bounds[1]])
-        #     plt.title(f"t = {t[n]:0.3f};")
-        #     plt.subplot(1, 2, 2)
-        #     line = np.array(density2)
-        #     plt.plot(vec_time, line, c="k")
-        #     plt.title(f"A /r L = {np.mean(u)  : .3f};", fontsize=10)
-        #     #     #     #
-        #     #     #     # # Choose to show plot live or save
-        #     # plt.show()
-        #     #     #     #
-        #     plt.savefig(f"{path}/fig{count:3d}")
-        #     plt.close()
-        #     count += 1
+        # # Save data set configuration
+        if n % 5000 == 0:
+            #     #     # Create HDF5 dataset for the current timestep
+            #     #     h5file.create_dataset(f"t{round(t[n], 3)}", data=u)
+            #     #
+            #     ### Plot
+            plt.subplots(1, 2, figsize=(10, 5))
+            plt.subplots_adjust(wspace=0.05)
+            plt.subplot(1, 2, 1)
+            plt.imshow(u.T, cmap="gnuplot", origin="lower", extent=np.concatenate((bounds, bounds)))
+            plt.colorbar(ticks=np.linspace(np.min(u), np.min(u) + 0.9 * (np.max(u) - np.min(u)), 7))
+            #
+            plt.xlim([bounds[0], bounds[1]])
+            plt.title(f"t = {t[n]:0.3f};")
+            plt.subplot(1, 2, 2)
+            line = np.array(density2)
+            plt.plot(vec_time, line, c="k")
+            plt.title(f"A /r L = {np.mean(u)  : .3f};", fontsize=10)
+            #     #     #
+            #     #     # # Choose to show plot live or save
+            # plt.show()
+            #     #     #
+            plt.savefig(f"{path}/fig{count:3d}")
+            plt.close()
+            # count += 1
 
         # # USE THIS FOR HEAT MAP EQUILIBIRUM:  Every 50 seconds save the mean and compute the relative error
         # if n % (5000) == 0:

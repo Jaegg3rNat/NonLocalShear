@@ -283,7 +283,7 @@ def pv_field_domain3(x_, y_, strengths, bounds, periodic_repeats=2):
     """
     L = bounds[1] - bounds[0]
     # q = 0.05 * L  # Cutoff radius based on domain size
-    q = 3*dx
+    q = 4 * dx
 
     vx = np.zeros_like(x_)
     vy = np.zeros_like(x_)
@@ -339,8 +339,8 @@ ny = nx  # Number of grid points in y
 dy = L / ny  # Grid spacing in y
 y = np.linspace(*bounds, ny + 1)[:-1]  # Periodic in y
 
-comp_rad =  14*dx # Competition radius of the kernel
-fac_rad = 5*dx  # Facilitation radius of the kernel
+comp_rad = 14 * dx   # Competition radius of the kernel
+fac_rad = 5 * dx  # Facilitation radius of the kernel
 eps = fac_rad / comp_rad
 
 delta = float(sys.argv[2])
@@ -356,7 +356,7 @@ print("System interval:", bounds)
 print("System Length:", L)
 print("Number of points:", nx)
 print("Delta x:", dx)
-#
+
 # Diffusion and biological parameters
 D = 1e-4  # Diffusion coefficient
 pe = float(sys.argv[4])  # Peclet number from command-line argument
@@ -488,7 +488,7 @@ for g in gamma:
     # ________________________________________________________________________________________________________
 
     # Create path for saving results based on nx value and flow parameters
-    path = f"{lattice_size_dir}/{flow_type}_Pe{Pe:.1f}_mu{mu:.4f}"
+    path = f"{lattice_size_dir}/{flow_type}_Pe{Pe:.1f}_mu{mu:.5f}"
     if not os.path.exists(path):
         os.makedirs(path)
 
@@ -513,7 +513,7 @@ for g in gamma:
     k0x = fftpack.fftfreq(nx, 1 / nx)
     k0y = fftpack.fftfreq(ny, 1 / ny)
     k0x_, k0y_ = np.meshgrid(k0x, k0y, indexing="ij")
-    u0 = fftpack.ifftshift(fftpack.fft2(fgaussian(k0x_, k0y_))).real / 5
+    # u0 = fftpack.ifftshift(fftpack.fft2(fgaussian(k0x_, k0y_))).real/5
     # ________________________________________________________________________________________________________
     # ________________________________________________________________________________________________________
 
@@ -543,11 +543,11 @@ for g in gamma:
         return [neg_sol, pos_sol]
 
 
-    # ubar = equilibrium_solution(delta,mu)[1]
-    # print(ubar)
+    ubar = equilibrium_solution(delta, mu)[1]
+    print('ubar', ubar)
     # Small positive random fluctuations around equilibrium (up to +5% of ubar)
-    # fluctuation_amplitude = 0.05
-    # u0 = 1 + fluctuation_amplitude * np.random.rand(nx, ny)
+    # fluctuation_amplitude = 0.5
+    u0 = ubar + np.random.rand(nx, ny)
     # Random fluctuations around equilibrium (±5% of ubar)
     # fluctuation_amplitude = 0.05
     # u0 = float(ubar)*(1 + fluctuation_amplitude * (2*np.random.rand(nx, ny) - 1))
@@ -556,16 +556,17 @@ for g in gamma:
     #
     # Plot Initial Configuration
     # plt.imshow(u.T, cmap="gnuplot", origin="lower", extent=np.concatenate((bounds, bounds)))
-    # # plt.colorbar(ticks=np.linspace(np.min(u), np.min(u) + 0.9 * (np.max(u) - np.min(u)), 7))
+    # plt.colorbar(ticks=np.linspace(np.min(u), np.min(u) + 0.9 * (np.max(u) - np.min(u)), 7))
     # plt.show()
     # plt.close()
+
     # # ________________________________________________________________________________________________________
     # ________________________________________________________________________________________________________
 
     # Time setup
     dt = 0.01
     dt = min(dt, (dx * dx + dy * dy) / D / 8)
-    T = 10000  # simulation duration
+    T = 8000  # simulation duration
     t = np.arange(0, T + dt, dt)
     nt = len(t)
 
@@ -577,16 +578,22 @@ for g in gamma:
     error = 10
 
     # Create the arrays of frequencies that will be used in the simulation
-    kx = fftpack.fftfreq(nx, 1 / nx)
-    ky = fftpack.fftfreq(nx, 1 / ny)
+    kx = fftpack.fftfreq(nx, L / nx)
+    ky = fftpack.fftfreq(nx, L / ny)
     count = 0
     # Loop over time steps
     for n in tqdm(range(1, nt)):
         # Use this if want to turn on the flow later
-        if flow_type == "sinusoidal" and n <= 5000:
+        if flow_type == "sinusoidal" and n <= 8000:
             gamma = 0
         else:
             gamma = g
+        # if n<= 15000:
+        #     gamma = 0
+        # elif 15000< n <= 20000:
+        #     gamma = 15* D / comp_rad
+        # else:
+        #     gamma = 0
         # Use if want the flow from begining
         # gamma = g
         # Compute time step
@@ -596,7 +603,7 @@ for g in gamma:
         # Save total concentration each dt
         vec_time.append(t[n])
         density2.append(np.mean(u))
-        if n % 5000 == 0:
+        if n % 2000 == 0:
             # Create file for saving results
             h5file = h5py.File(f"{path}/dat.h5", "w")
             h5file.create_dataset(f"t", data=u)  # save concentration
@@ -604,31 +611,31 @@ for g in gamma:
             h5file.create_dataset(f"density_", data=density2)
             h5file.close()
 
-        # # Save data set configuration
-        # if n % 5000 == 0:
-        #     #     #     # Create HDF5 dataset for the current timestep
-        #     #     #     h5file.create_dataset(f"t{round(t[n], 3)}", data=u)
-        #     #     #
-        #     #     ### Plot
-        #     plt.subplots(1, 2, figsize=(10, 5))
-        #     plt.subplots_adjust(wspace=0.05)
-        #     plt.subplot(1, 2, 1)
-        #     plt.imshow(u.T, cmap="gnuplot", origin="lower", extent=np.concatenate((bounds, bounds)))
-        #     plt.colorbar(ticks=np.linspace(np.min(u), np.min(u) + 0.9 * (np.max(u) - np.min(u)), 7))
-        #     #
-        #     plt.xlim([bounds[0], bounds[1]])
-        #     plt.title(f"t = {t[n]:0.3f};")
-        #     plt.subplot(1, 2, 2)
-        #     line = np.array(density2)
-        #     plt.plot(vec_time, line, c="k")
-        #     plt.title(f"A /r L = {np.mean(u)  : .4f};", fontsize=10)
-        #         #
-        #     #     #     # # Choose to show plot live or save
-        #     # plt.show()
-        #     #     #     #
-        #     plt.savefig(f"{path}/fig{count:3d}")
-        #     plt.close()
-        #     count += 1
+            # # Save data set configuration
+            # if n % 5000 == 0:
+            #     #     #     # Create HDF5 dataset for the current timestep
+            #     #     #     h5file.create_dataset(f"t{round(t[n], 3)}", data=u)
+            #     #     #
+            #     #     ### Plot
+            plt.subplots(1, 2, figsize=(10, 5))
+            plt.subplots_adjust(wspace=0.05)
+            plt.subplot(1, 2, 1)
+            plt.imshow(u.T, cmap="gnuplot", origin="lower", extent=np.concatenate((bounds, bounds)))
+            plt.colorbar(ticks=np.linspace(np.min(u), np.min(u) + 0.9 * (np.max(u) - np.min(u)), 7))
+            #
+            plt.xlim([bounds[0], bounds[1]])
+            plt.title(f"t = {t[n]:0.3f};")
+            plt.subplot(1, 2, 2)
+            line = np.array(density2)
+            plt.plot(vec_time, line, c="k")
+            plt.title(f"A /r L = {np.mean(u)  : .4f};", fontsize=10)
+            #
+            #     #     # # Choose to show plot live or save
+            # plt.show()
+            #     #     #
+            plt.savefig(f"{path}/fig{count:3d}")
+            plt.close()
+            # count += 1
 
         # # USE THIS FOR HEAT MAP EQUILIBIRUM:  Every 50 seconds save the mean and compute the relative error
         # if n % (5000) == 0:

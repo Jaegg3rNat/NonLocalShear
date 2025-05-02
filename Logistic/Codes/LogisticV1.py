@@ -15,7 +15,21 @@ from numba import jit, njit, prange  # For Just-In-Time compilation and parallel
 
 
 ## %% Functions
+def exp_kernel(dx, radius, X, Y):
+    # Center of the grid
+    x0 = (bounds[0] + bounds[1]) / 2
+    y0 = (bounds[0] + bounds[1]) / 2
 
+    # Compute the distance from the center
+    distance = np.sqrt((X - x0) ** 2 + (Y - y0) ** 2)
+    pot = np.exp(- distance ** 4 / radius ** 4)
+    normalization = np.trapz(np.trapz(pot, x, axis=0), y, axis=0)
+
+    print(np.mean(pot))
+    print(np.mean(pot / normalization))
+    # plt.imshow(pot ,extent=[bounds[0], bounds[1], bounds[0], bounds[1]], )
+    # plt.show()
+    return pot * dx * dy / normalization
 
 def rk4_pseudospectral(u, vx, vy, g, D, m2, dt, n_step, kx, ky):
     """
@@ -343,6 +357,8 @@ m2 *= dx * dy  # Ensure the kernel accounts for the area of each grid cell
 
 print("\n Number of grid points:", r_int)
 print("Normalization of kernel:", m_norm)
+
+# m2 = exp_kernel(dx, comp_rad, x_, y_)  # Kernel matrix in domain space
 # ________________________________________________________________________________________________________
 # ________________________________________________________________________________________________________
 
@@ -466,8 +482,8 @@ for g in gamma:
         return np.exp(-(kx0 ** 2 + ky0 ** 2) / kappa)
 
 
-    k0x = fftpack.fftfreq(nx, 1 / nx)
-    k0y = fftpack.fftfreq(ny, 1 / ny)
+    k0x = fftpack.fftfreq(nx, L / nx)
+    k0y = fftpack.fftfreq(ny, L / ny)
     k0x_, k0y_ = np.meshgrid(k0x, k0y, indexing="ij")
     u0 = fftpack.ifftshift(fftpack.fft2(fgaussian(k0x_, k0y_))).real
     u = np.copy(u0)
@@ -477,7 +493,7 @@ for g in gamma:
     # Time setup
     dt = 0.01
     dt = min(dt, (dx * dx + dy * dy) / D / 8)
-    T = 10000  # simulation duration
+    T = 12000  # simulation duration
     t = np.arange(0, T + dt, dt)
     nt = len(t)
 
@@ -489,8 +505,8 @@ for g in gamma:
     error = 10
 
     # Create the arrays of frequencies that will be used in the simulation
-    kx = fftpack.fftfreq(nx, 1 / nx)
-    ky = fftpack.fftfreq(nx, 1 / ny)
+    kx = fftpack.fftfreq(nx, L / nx)
+    ky = fftpack.fftfreq(nx, L / ny)
     count = 0
     # Loop over time steps
 
@@ -510,33 +526,35 @@ for g in gamma:
         vec_time.append(t[n])
         density2.append(np.mean(u))
 
-        # # Save field configurations for Movie Animation
-        # if n % 1000 == 0:
-        #     # Create HDF5 dataset for the current timestep
-        #     h5file.create_dataset(f"t{round(t[n], 3)}", data=u)
-        #
-        #     ### Plot
-        #     plt.subplots(1, 2, figsize=(25, 10))
-        #     plt.subplots_adjust(wspace=0.05)
-        #     plt.subplot(1, 2, 1)
-        #     plt.imshow(u.T, cmap="gnuplot", origin="lower", extent=np.concatenate((bounds, bounds)))
-        #     plt.colorbar(ticks=np.linspace(np.min(u), np.min(u) + 0.9 * (np.max(u) - np.min(u)), 7))
-        #
-        #     plt.xlim([bounds[0], bounds[1]])
-        #     plt.title(f"t = {t[n]:0.3f};")
-        #     plt.subplot(1, 2, 2)
-        #     line = np.array(density2)/r
-        #     plt.plot(vec_time, line,c="k")
-        #     plt.title(f"A /r L = {np.mean(u) / r : .3f};",fontsize = 10)
-        #     #
-        #     # # Choose to show plot live or save
-        #     # # plt.show()
-        #     #
-        #     plt.savefig(f"{path}/fig{count:3d}")
-        #     plt.close()
-        #     count += 1
+        if n % 2000 == 0:
 
-        # USE THIS FOR HEAT MAP EQUILIBIRUM:  Every 50 seconds save the mean and compute the relative error
+
+            # # Save data set configuration
+            # if n % 5000 == 0:
+            #     #     #     # Create HDF5 dataset for the current timestep
+            #     #     #     h5file.create_dataset(f"t{round(t[n], 3)}", data=u)
+            #     #     #
+            #     #     ### Plot
+            plt.subplots(1, 2, figsize=(10, 5))
+            plt.subplots_adjust(wspace=0.05)
+            plt.subplot(1, 2, 1)
+            plt.imshow(u.T, cmap="gnuplot", origin="lower", extent=np.concatenate((bounds, bounds)))
+            plt.colorbar(ticks=np.linspace(np.min(u), np.min(u) + 0.9 * (np.max(u) - np.min(u)), 7))
+            #
+            plt.xlim([bounds[0], bounds[1]])
+            plt.title(f"t = {t[n]:0.3f};")
+            plt.subplot(1, 2, 2)
+            line = np.array(density2)
+            plt.plot(vec_time, line, c="k")
+            plt.title(f"A /r L = {np.mean(u)/r  : .4f};", fontsize=10)
+            #
+            #     #     # # Choose to show plot live or save
+            # plt.show()
+            #     #     #
+            plt.savefig(f"{path}/fig{count:3d}")
+            plt.close()
+
+        # # USE THIS FOR HEAT MAP EQUILIBIRUM:  Every 50 seconds save the mean and compute the relative error
         if n % (5000) == 0:
             total_density.append(np.mean(density2))
 
@@ -550,6 +568,6 @@ for g in gamma:
 
     # save results
     h5file.create_dataset("time", data=vec_time)
-    h5file.create_dataset("tot_density", data=total_density)
+    # h5file.create_dataset("tot_density", data=total_density)
     h5file.create_dataset("density", data=density2)
     h5file.close()

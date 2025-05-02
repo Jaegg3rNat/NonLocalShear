@@ -8,12 +8,14 @@ from scipy.special import j1 as Bj1
 from random import sample
 import matplotlib.ticker as tkr
 from tqdm import tqdm
+import matplotlib.colors as mcolors
 
 
 def rho(mu, pe, w):
     D = 1e-4
     comp_rad = 0.2
     r = mu * D / comp_rad ** 2
+
 
     base_folder = f"../Data/q_0.05Data"
     velocity_field_name = "rankine"
@@ -27,7 +29,7 @@ def rho(mu, pe, w):
 
 
 def carrying_cap(mu, pe, w):
-    base_folder = f"../Data/q_0.2Data"
+    base_folder = f"../Data/q_0.05Data"
     velocity_field_name = "rankine"
 
     # Open the HDF5 file and inspect contents
@@ -41,7 +43,7 @@ def carrying_cap(mu, pe, w):
 
 
 def ufp(mu, pe, w):
-    base_folder = f"../Data/q_0.2Data"
+    base_folder = f"../Data/q_0.05Data"
     velocity_field_name = "rankine"
 
     # Open the HDF5 file and inspect contents
@@ -101,14 +103,50 @@ dZdy = np.gradient(rho_matrix, axis=0)  # Gradient along y
 gradient_magnitude = np.sqrt(dZdx ** 2 + dZdy ** 2)
 
 
-# norm = matplotlib.colors.Normalize(vmin=1.04, vmax=umax)
+# Define the colors for the gradient
+def create_custom_colormap(vmin, vmax, value_white, n_colors=256):
+    """
+    Create a colormap where:
+    - value_white is white (default 1.0)
+    - Values below value_white are light blue gradient
+    - Values above value_white are red gradient
 
-pm = plt.imshow(rho_matrix, cmap="gnuplot", extent=np.concatenate((bounds, bounds2)), origin='lower',
+    Parameters:
+    - vmin: minimum value in data
+    - vmax: maximum value in data
+    - value_white: value that should be white (default 1.0)
+    - n_colors: number of discrete colors in colormap
+    """
+    # Calculate relative position of white point
+    white_pos = (value_white - vmin) / (vmax - vmin)
+
+    # Create colormap with:
+    # - Below white: blues getting lighter until white
+    # - Above white: reds getting stronger from white
+    colors = [
+                 plt.cm.Blues_r(x) for x in np.linspace(1 - white_pos, 1, int(n_colors * white_pos))
+             ] + [
+                 plt.cm.Reds(x) for x in np.linspace(0, 1., int(n_colors * (1 - white_pos)))
+             ]
+
+    return mcolors.ListedColormap(colors)
+
+
+# Example usage
+vmin, vmax = 1., np.max(rho_matrix)  # Your data range
+value_white = 1.01  # Value that should be white
+# print(rho_matrix[0,:])
+
+# Create colormap and norm
+cmap = create_custom_colormap(vmin, vmax, value_white)
+norm = mcolors.Normalize(vmin=vmin, vmax=vmax)
+
+pm = plt.imshow(rho_matrix, cmap=cmap,norm=norm, extent=np.concatenate((bounds, bounds2)), origin='lower',
                 aspect='auto')
 cbar = fig.colorbar(pm, ax=axL)
 cbar.ax.tick_params(labelsize=10)
 cbar.set_label('Time-averaged \n normalized population abundance', rotation=270, fontsize=11, labelpad=22)
-plt.axvline(185.192, ymin=0, ymax=350, ls='--', color='white', alpha=0.8)
+plt.axvline(185.192, ymin=0, ymax=350, ls='--', color='k', alpha=0.8)
 # Details
 axL.set_xlabel(r'Diffusive Damköhler, $\mbox{Da} $', fontsize=13)
 axL.set_ylabel(r'Characteristic Péclet, $\mbox{Pe}$', fontsize=13, rotation=90)
@@ -120,16 +158,16 @@ cx, cy = 450, 10
 dx, dy = 450, 25
 #
 plt.text(ax, ay, s='B',
-         color='white')  # ,bbox={'facecolor':'limegreen','alpha':0.8,'edgecolor':'none','boxstyle':'round,pad=0.25'},
+         color='k')  # ,bbox={'facecolor':'limegreen','alpha':0.8,'edgecolor':'none','boxstyle':'round,pad=0.25'},
 # ha='center', va='center')
 plt.text(bx, by, s='C',
-         color='white')  # ,bbox={'facecolor':'limegreen','alpha':0.8,'edgecolor':'none','boxstyle':'round,pad=0.25'},
+         color='k')  # ,bbox={'facecolor':'limegreen','alpha':0.8,'edgecolor':'none','boxstyle':'round,pad=0.25'},
 # ha='center', va='center')
 plt.text(cx, cy, s='D',
-         color='white')  # ,bbox={'facecolor':'limegreen','alpha':0.8,'edgecolor':'none','boxstyle':'round,pad=0.25'},
+         color='k')  # ,bbox={'facecolor':'limegreen','alpha':0.8,'edgecolor':'none','boxstyle':'round,pad=0.25'},
 # ha='center', va='center')
 plt.text(dx, dy, s='E',
-         color='white')  # ,bbox={'facecolor':'limegreen','alpha':0.8,'edgecolor':'none','boxstyle':'round,pad=0.25'},
+         color='k')  # ,bbox={'facecolor':'limegreen','alpha':0.8,'edgecolor':'none','boxstyle':'round,pad=0.25'},
 # ha='center', va='center')
 #
 #

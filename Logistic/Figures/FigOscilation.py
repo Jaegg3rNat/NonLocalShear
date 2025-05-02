@@ -101,6 +101,7 @@ axsnest0.indicate_inset_zoom(axin1)
 # # PANEL B
 l1 = 10000
 fk = fftpack.fft(c1[-l1:])
+fk = abs(fk)
 q = fftpack.fftfreq(len(c1[-l1:]), 0.01)
 
 fk1 = fftpack.fft(c2[-l1:])
@@ -109,7 +110,7 @@ q1 = fftpack.fftfreq(len(c2[-l1:]), 0.01)
 fk2 = fftpack.fft(c3[-l1:])
 q2 = fftpack.fftfreq(len(c3[-l1:]), 0.01)
 
-line11, = axsnest1.loglog(q[:int(len(q) / 2)], abs(fk)[:int(len(q) / 2)], '.-', color=colors[1], label=r'$P_e = 10$')
+line11, = axsnest1.loglog(q[:int(len(q) / 2)], fk[:int(len(q) / 2)], '.-', color=colors[1], label=r'$P_e = 10$')
 line22, = axsnest1.loglog(q1[:int(len(q1) / 2)], abs(fk1)[:int(len(q1) / 2)], '.-', color=colors[2],
                          label=r'$P_e = 50$')
 line33, = axsnest1.loglog(q2[:int(len(q2) / 2)], abs(fk2)[:int(len(q2) / 2)], '.-', color=colors[3],
