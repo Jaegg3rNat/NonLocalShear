@@ -18,8 +18,8 @@ from matplotlib.colors import LinearSegmentedColormap
 def rho(eps, mu, pe, lamb, flow):
     D = 1e-4
 
-    base_folder = f"../Data/lambda{lamb}/128_eps{eps:.3f}"
-
+    # base_folder = f"../Data/lambda{lamb}/128_eps{eps:.3f}"
+    base_folder = f"/data/workspaces/nathan/SDF/lambda{lamb}/128_eps{eps:.3f}"
     fl = flow
 
     # Open the HDF5 file and inspect contents
@@ -33,8 +33,8 @@ def rho(eps, mu, pe, lamb, flow):
 
 
 def ufp(eps, mu, pe, lamb, flow):
-    base_folder = f"../Data/lambda{lamb}/128_eps{eps:.3f}"
-
+    # base_folder = f"../Data/lambda{lamb}/128_eps{eps:.3f}"
+    base_folder = f"/data/workspaces/nathan/SDF/lambda{lamb}/128_eps{eps:.3f}"
     # Open the HDF5 file and inspect contents
     file_path = f'{base_folder}/{flow}_Pe{pe:.1f}_mu{mu:.5f}/dat.h5'  # Change this to your .h5 file path
     f = h5py.File(file_path, 'r')
@@ -51,8 +51,8 @@ def check_corrupt_files(eps, lamb, mu_values, pe_values, flow):
     D = 1e-4  # Constant, not used here but retained from your function
 
     # Base directory structure
-    base_folder = f"../Data/lambda{lamb}/128_eps{eps:.3f}"
-
+    # base_folder = f"../Data/lambda{lamb}/128_eps{eps:.3f}"
+    base_folder = f"/data/workspaces/nathan/SDF/lambda{lamb}/128_eps{eps:.3f}"
     corrupt_files = []
 
     # Loop through mu and Pe values
@@ -101,7 +101,8 @@ rc('text', usetex=True)
 
 lamb = 0.8
 # Read data from file
-mu_values, ubar_pos, ubar_neg = np.loadtxt(f'../Data/ubar_values{lamb:.4f}.dat', unpack=True)
+# mu_values, ubar_pos, ubar_neg = np.loadtxt(f'../Data/ubar_values{lamb:.4f}.dat', unpack=True)
+mu_values, ubar_pos, ubar_neg = np.loadtxt(f'/data/workspaces/nathan/SDF/ubar_values{lamb:.4f}.dat', unpack=True)
 eps = 0.357
 D = 1e-4
 dx = 1 / 128
@@ -230,16 +231,16 @@ ayn, byn, cyn, dyn = ay * rc, by * rc, cy * rc, dy * rc
 print(axn,bxn,cxn,dxn)
 print(ayn, byn, cyn, dyn)
 plt.text(axn, ayn, s='B',
-         color='red')  # ,bbox={'facecolor':'limegreen','alpha':0.8,'edgecolor':'none','boxstyle':'round,pad=0.25'},
+         color='k')  # ,bbox={'facecolor':'limegreen','alpha':0.8,'edgecolor':'none','boxstyle':'round,pad=0.25'},
 # ha='center', va='center')
 plt.text(bxn, byn, s='C',
-         color='red')  # ,bbox={'facecolor':'limegreen','alpha':0.8,'edgecolor':'none','boxstyle':'round,pad=0.25'},
+         color='k')  # ,bbox={'facecolor':'limegreen','alpha':0.8,'edgecolor':'none','boxstyle':'round,pad=0.25'},
 # ha='center', va='center')
 plt.text(cxn, cyn, s='D',
-         color='red')  # ,bbox={'facecolor':'limegreen','alpha':0.8,'edgecolor':'none','boxstyle':'round,pad=0.25'},
+         color='k')  # ,bbox={'facecolor':'limegreen','alpha':0.8,'edgecolor':'none','boxstyle':'round,pad=0.25'},
 # ha='center', va='center')
 plt.text(dxn, dyn, s='E',
-         color='red')  # ,bbox={'facecolor':'limegreen','alpha':0.8,'edgecolor':'none','boxstyle':'round,pad=0.25'},
+         color='k')  # ,bbox={'facecolor':'limegreen','alpha':0.8,'edgecolor':'none','boxstyle':'round,pad=0.25'},
 # ha='center', va='center')
 #
 #

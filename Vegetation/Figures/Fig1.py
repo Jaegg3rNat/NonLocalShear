@@ -32,17 +32,17 @@ ubar_pos = np.maximum(0, ubar_pos)
 print(mu_values)
 
 # Data of non-local model
-base_folder = f"../Data/lambda{lamb}/128_eps{eps:.3f}"
+base_folder = f"../Data/lambda_{lamb}"
 rho_ = []
 mu_list = np.arange(0.7844, 0.798, 0.0002)
 mu_list = np.append(mu_list, np.arange(0.8, 1., 0.002))
 print('mu list', mu_list)
 # ===========================================
 D = 1e-4
-dx = 1/128
-rc = 14 *dx
+dx = 1 / 128
+rc = 14 * dx
 mu_l = list(mu_list)
-newMu = [( mu) / (D / rc ** 2) for mu in mu_l]
+newMu = [(mu) / (D / rc ** 2) for mu in mu_l]
 
 flow = 'rankine'
 pe = 0
@@ -57,31 +57,31 @@ for mu in tqdm(mu_list):
     f.close()
 
 #
-axL.plot(( mu_values) / (D / rc ** 2), ubar_pos / ubar_pos, 'b-', label=r'$Homogeneous$')
+axL.plot(mu_values / (D / rc ** 2), ubar_pos / ubar_pos, 'b-', label=r'$Homogeneous$')
 axL.plot(newMu, rho_, 'o', mfc='none', color='r', label='Non-Local Model')
-axL.axvline(x=(0.7863) / (D / rc ** 2), color='k', linestyle='--', alpha=0.6)
-axL.axvline(x=( 0.828) / (D / rc ** 2), color='g', linestyle='--', alpha=0.4)
-axL.axvline(x=( 0.916) / (D / rc ** 2), color='g', linestyle='--', alpha=0.4)
+axL.axvline(x=0.7863 / (D / rc ** 2), color='k', linestyle='--', alpha=0.6)
+axL.axvline(x=0.828 / (D / rc ** 2), color='g', linestyle='--', alpha=0.4)
+axL.axvline(x=0.916 / (D / rc ** 2), color='g', linestyle='--', alpha=0.4)
 
-print('Da Critical',(0.7863) / (D / rc ** 2))
+print('Da Critical', 0.7863 / (D / rc ** 2))
 #
 axL.set_xlabel(r'Normalized Death Ratio, $\mathrm{Da}^-$', fontsize=13)
 
-axL.set_xlim([newMu[0]-4 , newMu[-25]])
+axL.set_xlim([newMu[0] - 4, newMu[-25]])
 axL.set_ylim([0.85, 1.35])
 plt.legend()
 axL.set_ylabel('Normalized Population Abundance, ' r'$A$', fontsize=13)
 #
-axL.text(x=( 0.868) / (D / rc ** 2), y=1.2, s=r' $\mathcal{S} $', fontsize=12, color='k', ha='center',
+axL.text(x=0.868 / (D / rc ** 2), y=1.2, s=r' C ', fontsize=12, color='k', ha='center',
          bbox={'facecolor': 'ghostwhite', 'alpha': 0.8, 'edgecolor': 'gray', 'boxstyle': 'round,pad=0.25'})
-axL.text(x=( 0.808) / (D / rc ** 2), y=1.15, s=r'$\mathcal{H}^g$', fontsize=12, color='k', ha='center',
+axL.text(x=0.808 / (D / rc ** 2), y=1.15, s=r'B', fontsize=12, color='k', ha='center',
          bbox={'facecolor': 'ghostwhite', 'alpha': 0.8, 'edgecolor': 'gray', 'boxstyle': 'round,pad=0.25'})
-axL.text(x=( 0.929) / (D / rc ** 2), y=1.25, s=r'$\mathcal{H}^s$', fontsize=12, color='k', ha='center',
+axL.text(x=0.929 / (D / rc ** 2), y=1.25, s=r'D', fontsize=12, color='k', ha='center',
          bbox={'facecolor': 'ghostwhite', 'alpha': 0.8, 'edgecolor': 'gray', 'boxstyle': 'round,pad=0.25'})
-axL.text(x=( 0.766) / (D / rc ** 2), y=1.1, s=r'$\mathcal{H}^0$', fontsize=12, color='k', ha='center',
-         bbox={'facecolor': 'ghostwhite', 'alpha': 0.8, 'edgecolor': 'gray', 'boxstyle': 'round,pad=0.25'})
+# axL.text(x=( 0.766) / (D / rc ** 2), y=1.1, s=r'$\mathcal{H}^0$', fontsize=12, color='k', ha='center',
+#          bbox={'facecolor': 'ghostwhite', 'alpha': 0.8, 'edgecolor': 'gray', 'boxstyle': 'round,pad=0.25'})
 
-axL.text( x = newMu[0]-4.1 , y= 1.35 , s='A', fontweight='black', fontsize=13,
+axL.text(x=newMu[0] - 4.1, y=1.35, s='A', fontweight='black', fontsize=13,
          bbox=dict(facecolor='gainsboro', edgecolor='black', boxstyle='round,pad=0.25'))
 #
 # ===========================================
@@ -89,7 +89,7 @@ axL.text( x = newMu[0]-4.1 , y= 1.35 , s='A', fontweight='black', fontsize=13,
 axR = subfigs[1].subplots(3, 1, sharey=False, sharex=True)
 #
 #
-base_folder = f"../Data/lambda{lamb}/128_eps{eps:.3f}"
+base_folder = f"../Data/lambda_{lamb}"
 mu = 0.7906
 # # # Example usage
 file_path = f'{base_folder}/{flow}_Pe{pe:.1f}_mu{mu:.5f}/dat.h5'  # Change this to your .h5 file path
@@ -131,12 +131,12 @@ axR[0].set_ylabel(r'$y$', fontsize=15, rotation=90)
 axR[1].set_ylabel(r'$y$', fontsize=15, rotation=90)
 axR[2].set_ylabel(r'$y$', fontsize=15, rotation=90)
 
-axR[0].text( -0.5, 1. - 0.5 , s='B', fontweight='black', fontsize=13,
-         bbox=dict(facecolor='gainsboro', edgecolor='black', boxstyle='round,pad=0.25'))
-axR[1].text( -0.5, 1. - 0.5 , s='C', fontweight='black', fontsize=13,
-         bbox=dict(facecolor='gainsboro', edgecolor='black', boxstyle='round,pad=0.25'))
-axR[2].text( -0.5, 1. - 0.5 , s='D', fontweight='black', fontsize=13,
-         bbox=dict(facecolor='gainsboro', edgecolor='black', boxstyle='round,pad=0.25'))
+axR[0].text(-0.5, 1. - 0.5, s='B', fontweight='black', fontsize=13,
+            bbox=dict(facecolor='gainsboro', edgecolor='black', boxstyle='round,pad=0.25'))
+axR[1].text(-0.5, 1. - 0.5, s='C', fontweight='black', fontsize=13,
+            bbox=dict(facecolor='gainsboro', edgecolor='black', boxstyle='round,pad=0.25'))
+axR[2].text(-0.5, 1. - 0.5, s='D', fontweight='black', fontsize=13,
+            bbox=dict(facecolor='gainsboro', edgecolor='black', boxstyle='round,pad=0.25'))
 # plt.show()
 
 

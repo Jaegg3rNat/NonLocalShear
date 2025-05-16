@@ -41,19 +41,20 @@ def images_to_video(image_folder, output_video_path, fps):
     cv2.destroyAllWindows()
     video.release()
 
-
+nx = 128
+comp_rad = 0.2
 if __name__ == "__main__":
     # Define base folder and velocity field name
-    base_folder = 'path/to/base_folder'  # Replace with the actual base folder path
-    velocity_field_name = 'example_velocity_field'  # Replace with the actual velocity field name
+    base_folder = f"Logistic/Codes/simulation_results/{nx}_R{comp_rad:.1f}"  # Replace with the actual base folder path
+    velocity_field_name = 'rankine'  # Replace with the actual velocity field name
 
     # Define parameters for the video creation
-    mu = 500
-    Pe = 50
-    w = 2 * np.pi
+    mu = 400
+    Pe = 25
+    w = 0# 2 * np.pi
 
     # Construct the paths for the image folder and the output video file
-    image_folder_path = f'{base_folder}/{velocity_field_name}mu{mu:.2f}_w{w:.2f}_Pe{Pe:.1f}'
+    image_folder_path = f'{base_folder}/{velocity_field_name}_mu{mu:.2f}_Pe{Pe:.1f}_w{w:.2f}'
     output_video_path = f'{base_folder}/{velocity_field_name}_video{mu:.0f}_{Pe:.0f}.mov'
 
     # Set the desired frames per second (fps) for the output video

@@ -8,23 +8,37 @@ import sys
 from matplotlib import rc
 import matplotlib
 import matplotlib.ticker as tkr
+import re
 
 # Set up global plotting parameters
 rc('font', **{'family': 'serif', 'serif': ['Computer Modern']})
 rc('text', usetex=True)
 
+### HDF5 File Inspection
 def print_name(name, obj):
-    """
-    Print the names and types of items in an HDF5 file.
+    """Function to print the name of groups and datasets in an HDF5 file."""
+    if isinstance(obj, h5py.Group):
+        print(f"Group: {name}")
+    elif isinstance(obj, h5py.Dataset):
+        print(f"Dataset: {name}, Shape: {obj.shape}, Dtype: {obj.dtype}")
 
-    Parameters:
-    name (str): The name of the item.
-    obj (h5py.Dataset or h5py.Group): The item itself.
-    """
-    if isinstance(obj, h5py.Dataset):
-        print('Dataset:', name)
-    elif isinstance(obj, h5py.Group):
-        print('Group:', name)
+
+def print_hdf5_contents(file_path):
+    """Function to open an HDF5 file and print its contents."""
+    with h5py.File(file_path, 'r') as f:
+        f.visititems(print_name)
+
+
+def time_hdf5(file_path):
+    """Function to extract time values from HDF5 file."""
+    with h5py.File(file_path, 'r') as f:
+        t_values = np.array([
+            float(re.search(r"t(\d+(\.\d+)?)", name).group(1))
+            for name in f.keys() if re.match(r"t\d+(\.\d+)?$", name)
+        ])
+        t_values.sort()
+    return t_values
+
 
 def fig(mu, w, Pe, flow_type):
     """
@@ -36,7 +50,7 @@ def fig(mu, w, Pe, flow_type):
     Pe (float): Peclet number.
     """
     # Define domain and parameters
-    nx = 256
+    nx = 128
     bounds = np.array([-0.5, 0.5])
     y = np.linspace(*bounds, nx + 1)[1:]
     D = 1e-4
@@ -45,21 +59,24 @@ def fig(mu, w, Pe, flow_type):
     g = Pe * comp_rad * (D / comp_rad ** 2)
 
 
-    base_folder = f"simulation_results/{nx}_R{comp_rad:.1f}"
+    base_folder = f"Logistic/Codes/simulation_results/{nx}_R{comp_rad:.1f}"
     velocity_field_name = flow_type
 
     # Open the HDF5 file and inspect contents
     file_path = f'{base_folder}/{velocity_field_name}_mu{mu:.2f}_Pe{Pe:.1f}_w{w:.2f}/dat.h5'
     with h5py.File(file_path, 'r') as f:
-        f.visititems(print_name)  # List contents of the file
-
+        # f.visititems(print_name)  # List contents of the file
+        t = time_hdf5(file_path)
         # Iterate through the saved time steps and generate figures
         for j in range(8000):
-            i = 0.1 + 0.5 * j
-            ti = f['time'][int(i / 0.01)]
-            u = f[f"t{i:.1f}"][:]
-            conc = f['density'][:int(i / 0.01)]
-            conc_time = f['time'][:int(i / 0.01)]
+
+            ii = 0.1 + 0.5 * j
+            i = t[int(ii / 0.01)]
+            print(i)
+            # ti = f['time'][int(i / 0.01)]
+            u = f[f"t{i}"][:]
+            conc = f['density'][:int(ii / 0.01)]
+            conc_time = f['time'][:int(ii / 0.01)]
 
             # Create a new figure with two subfigures
             fig = plt.figure(dpi=400, figsize=(10, 4))
@@ -77,7 +94,7 @@ def fig(mu, w, Pe, flow_type):
             axL.set_xlim([bounds[0], bounds[1]])
             axL.set_xlabel(r'$x$', fontsize=14)
             axL.set_ylabel(r'$y$', fontsize=14)
-            axL.set_title(f"$t = {ti:0.1f}$", fontsize=14)
+            axL.set_title(f"$t = {ii:0.1f}$", fontsize=14)
 
             # RIGHT PANEL: Scaled population abundance over time
             axR = subfigs[1].subplots(1, 1, sharey=True)
@@ -86,7 +103,7 @@ def fig(mu, w, Pe, flow_type):
             axR.set_xlabel(r'Simulation time, t', fontsize=13)
             axR.set_ylabel('Scaled \n Population Abundance', fontsize=13)
             axR.set_ylim([0.1, 2])
-            # axR.set_xlim([0, 1200])
+            axR.set_xlim([0, 1200])
             axR.legend(handles=[dot], fontsize=10)
 
             # Save the figure
