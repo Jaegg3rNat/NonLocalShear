@@ -32,6 +32,7 @@ def exp_kernel(dx, radius, X, Y):
     # plt.show()
     return pot * dx * dy / normalization
 
+
 def rk4_pseudospectral(u, vx, vy, g, D, m2, dt, n_step, kx, ky):
     """
         Implements the 4th-order Runge-Kutta method using a pseudospectral approach.
@@ -528,33 +529,31 @@ for g in gamma:
         density2.append(np.mean(u))
         h5file.create_dataset(f"t{t[n]}", data=u)
 
-        # if n % 2000 == 0:
-        #
-        #
-        #     # # Save data set configuration
-        #     # if n % 5000 == 0:
-        #     #     #     #     # Create HDF5 dataset for the current timestep
-        #     #     #     #     h5file.create_dataset(f"t{round(t[n], 3)}", data=u)
-        #     #     #     #
-        #     #     #     ### Plot
-        #     plt.subplots(1, 2, figsize=(10, 5))
-        #     plt.subplots_adjust(wspace=0.05)
-        #     plt.subplot(1, 2, 1)
-        #     plt.imshow(u.T, cmap="gnuplot", origin="lower", extent=np.concatenate((bounds, bounds)))
-        #     plt.colorbar(ticks=np.linspace(np.min(u), np.min(u) + 0.9 * (np.max(u) - np.min(u)), 7))
-        #     #
-        #     plt.xlim([bounds[0], bounds[1]])
-        #     plt.title(f"t = {t[n]:0.3f};")
-        #     plt.subplot(1, 2, 2)
-        #     line = np.array(density2)
-        #     plt.plot(vec_time, line, c="k")
-        #     plt.title(f"A /r L = {np.mean(u)/r  : .4f};", fontsize=10)
-        #     #
-        #     #     #     # # Choose to show plot live or save
-        #     # plt.show()
-        #     #     #     #
-        #     plt.savefig(f"{path}/fig{count:3d}")
-        #     plt.close()
+        if n % 2000 == 0:
+            # # Save data set configuration
+            # if n % 5000 == 0:
+            #     #     #     # Create HDF5 dataset for the current timestep
+            #     #     #     h5file.create_dataset(f"t{round(t[n], 3)}", data=u)
+            #     #     #
+            #     #     ### Plot
+            plt.subplots(1, 2, figsize=(10, 5))
+            plt.subplots_adjust(wspace=0.05)
+            plt.subplot(1, 2, 1)
+            plt.imshow(u.T, cmap="gnuplot", origin="lower", extent=np.concatenate((bounds, bounds)))
+            plt.colorbar(ticks=np.linspace(np.min(u), np.min(u) + 0.9 * (np.max(u) - np.min(u)), 7))
+            #
+            plt.xlim([bounds[0], bounds[1]])
+            plt.title(f"t = {t[n]:0.3f};")
+            plt.subplot(1, 2, 2)
+            line = np.array(density2)
+            plt.plot(vec_time, line, c="k")
+            plt.title(f"A /r L = {np.mean(u) / r  : .4f};", fontsize=10)
+            #
+            #     #     # # Choose to show plot live or save
+            # plt.show()
+            #     #     #
+            plt.savefig(f"{path}/fig{count:3d}")
+            plt.close()
 
         # # # USE THIS FOR HEAT MAP EQUILIBIRUM:  Every 50 seconds save the mean and compute the relative error
         # if n % (5000) == 0:
@@ -568,8 +567,8 @@ for g in gamma:
         #     h5file.create_dataset(f"t{t[n]}", data=u)  # save final concentration
         #     break
 
-    # save results
-    h5file.create_dataset("time", data=vec_time)
-    # h5file.create_dataset("tot_density", data=total_density)
-    h5file.create_dataset("density", data=density2)
-    h5file.close()
+    # # save results
+    # h5file.create_dataset("time", data=vec_time)
+    # # h5file.create_dataset("tot_density", data=total_density)
+    # h5file.create_dataset("density", data=density2)
+    # h5file.close()
