@@ -66,7 +66,7 @@ If you want to save the data, you should uncomment the final lines of the code a
 This script performs the numerical integration of Eqs. 2.16 of the paper, using a pseudospectral approach and RK4. It includes the following steps:
 Is the unnormalized version of the vegetation model. 
 
-Therefore the `mu` parameter is defined from (0,1). `mu > 1` will is not defined.
+Therefore the `mu` parameter is defined from (0,1). `mu > 1` is not defined.
 
 `delta` is the \lambda parameter defined in the paper.
 
@@ -86,6 +86,10 @@ This script runs the unnormalized version of the nonlocal logistic model. Howeve
 
 `mu` is the Damkholer number (normalize growth rate) defined in the paper.
 `pe` is the Peclet number (normlazid advection rate).
+
+That means:
+
+`mu``is  $\mu = \alpha R^2/D$
 
 - Initialization of parameters and variables.
 - Definition of the logistic equation.
