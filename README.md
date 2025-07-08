@@ -21,6 +21,8 @@ The following packages are necessary to run the code:
 - `tqdm`: For displaying progress bars.
 - `numba`: For JIT compilation to speed up the code.
 
+It is also required to have a Python version >= 3.6.
+
 ## Installation
 
 You can install the required packages using `pip`:
@@ -32,7 +34,7 @@ pip install numpy scipy sympy matplotlib h5py tqdm numba
 ## Usage
 
 To run the code, navigate to the directory containing the scripts and execute them using Python:
-Each script should be run individually and they have input paramters:
+Each script should be run individually and they have input parameters:
 - LogisticV1.py:
   - mu: is the Damkholer number (growth rate)
   - pe: is the Peclet number (advection rate)
@@ -54,17 +56,37 @@ python Logistic/Codes/LogisticV1.py mu pe flowtype
 
 ## Description
 
+The base output of the code is a figure showing the Spatial Pattern Distribution.
+This figure is refreshed every 2000 time steps.
+If you want to save the data, you should uncomment the final lines of the code and choose if you want to save the field distribution or only the Density time series.
+
+
 ### _NonLocal_FC.py
 
-This script performs the numerical integration of PDEs using a pseudospectral approach and RK4. It includes the following steps:
+This script performs the numerical integration of Eqs. 2.16 of the paper, using a pseudospectral approach and RK4. It includes the following steps:
+Is the unnormalized version of the vegetation model. 
+
+Therefore the `mu` parameter is defined from (0,1). `mu > 1` will is not defined.
+
+`delta` is the \lambda parameter defined in the paper.
+
+`pe` in this model is not the Peclet number, but the advection rate.
+
 - Initialization of parameters and variables.
 - Definition of the equilibrium solution using symbolic mathematics.
 - Time-stepping loop to update the solution using the RK4 method.
 - Saving results and plotting the configuration at specified intervals.
 
+
 ### LogisticV1.py
 
 This script implements the logistic model for the given problem. It includes:
+
+This script runs the unnormalized version of the nonlocal logistic model. However it uses as input the normalize parameters defined in the paper.
+
+`mu` is the Damkholer number (normalize growth rate) defined in the paper.
+`pe` is the Peclet number (normlazid advection rate).
+
 - Initialization of parameters and variables.
 - Definition of the logistic equation.
 - Numerical integration using the RK4 method.
