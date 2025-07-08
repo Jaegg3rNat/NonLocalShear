@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # %% Packages
 # Import essential libraries for numerical computation, plotting, and performance optimization
 import numpy as np  # For array operations and mathematical functions

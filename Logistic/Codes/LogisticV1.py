@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # %% Packages
 # Import essential libraries for numerical computation, plotting, and performance optimization
 import numpy as np  # For array operations and mathematical functions
@@ -493,7 +494,7 @@ for g in gamma:
     # Time setup
     dt = 0.01
     dt = min(dt, (dx * dx + dy * dy) / D / 8)
-    T = 12000  # simulation duration
+    T = 10000  # simulation duration
     t = np.arange(0, T + dt, dt)
     nt = len(t)
 
@@ -525,46 +526,47 @@ for g in gamma:
         # Track time and Density each dt
         vec_time.append(t[n])
         density2.append(np.mean(u))
+        h5file.create_dataset(f"t{t[n]}", data=u)
 
-        if n % 2000 == 0:
+        # if n % 2000 == 0:
+        #
+        #
+        #     # # Save data set configuration
+        #     # if n % 5000 == 0:
+        #     #     #     #     # Create HDF5 dataset for the current timestep
+        #     #     #     #     h5file.create_dataset(f"t{round(t[n], 3)}", data=u)
+        #     #     #     #
+        #     #     #     ### Plot
+        #     plt.subplots(1, 2, figsize=(10, 5))
+        #     plt.subplots_adjust(wspace=0.05)
+        #     plt.subplot(1, 2, 1)
+        #     plt.imshow(u.T, cmap="gnuplot", origin="lower", extent=np.concatenate((bounds, bounds)))
+        #     plt.colorbar(ticks=np.linspace(np.min(u), np.min(u) + 0.9 * (np.max(u) - np.min(u)), 7))
+        #     #
+        #     plt.xlim([bounds[0], bounds[1]])
+        #     plt.title(f"t = {t[n]:0.3f};")
+        #     plt.subplot(1, 2, 2)
+        #     line = np.array(density2)
+        #     plt.plot(vec_time, line, c="k")
+        #     plt.title(f"A /r L = {np.mean(u)/r  : .4f};", fontsize=10)
+        #     #
+        #     #     #     # # Choose to show plot live or save
+        #     # plt.show()
+        #     #     #     #
+        #     plt.savefig(f"{path}/fig{count:3d}")
+        #     plt.close()
 
-
-            # # Save data set configuration
-            # if n % 5000 == 0:
-            #     #     #     # Create HDF5 dataset for the current timestep
-            #     #     #     h5file.create_dataset(f"t{round(t[n], 3)}", data=u)
-            #     #     #
-            #     #     ### Plot
-            plt.subplots(1, 2, figsize=(10, 5))
-            plt.subplots_adjust(wspace=0.05)
-            plt.subplot(1, 2, 1)
-            plt.imshow(u.T, cmap="gnuplot", origin="lower", extent=np.concatenate((bounds, bounds)))
-            plt.colorbar(ticks=np.linspace(np.min(u), np.min(u) + 0.9 * (np.max(u) - np.min(u)), 7))
-            #
-            plt.xlim([bounds[0], bounds[1]])
-            plt.title(f"t = {t[n]:0.3f};")
-            plt.subplot(1, 2, 2)
-            line = np.array(density2)
-            plt.plot(vec_time, line, c="k")
-            plt.title(f"A /r L = {np.mean(u)/r  : .4f};", fontsize=10)
-            #
-            #     #     # # Choose to show plot live or save
-            # plt.show()
-            #     #     #
-            plt.savefig(f"{path}/fig{count:3d}")
-            plt.close()
-
-        # # USE THIS FOR HEAT MAP EQUILIBIRUM:  Every 50 seconds save the mean and compute the relative error
-        if n % (5000) == 0:
-            total_density.append(np.mean(density2))
-
-            error = abs(total_density[-2] - total_density[-1]) / total_density[-2]
-
-        # Let it run at least half o simulation time to guarantee equilibrium
-        if error < 0.005 and n >= int(nt / 2):
-            # if error < 0.005 and n == nt -5000:
-            h5file.create_dataset(f"t{t[n]}", data=u)  # save final concentration
-            break
+        # # # USE THIS FOR HEAT MAP EQUILIBIRUM:  Every 50 seconds save the mean and compute the relative error
+        # if n % (5000) == 0:
+        #     total_density.append(np.mean(density2))
+        #
+        #     error = abs(total_density[-2] - total_density[-1]) / total_density[-2]
+        #
+        # # Let it run at least half o simulation time to guarantee equilibrium
+        # if error < 0.005 and n >= int(nt / 2):
+        #     # if error < 0.005 and n == nt -5000:
+        #     h5file.create_dataset(f"t{t[n]}", data=u)  # save final concentration
+        #     break
 
     # save results
     h5file.create_dataset("time", data=vec_time)
