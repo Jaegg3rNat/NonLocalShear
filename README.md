@@ -89,7 +89,9 @@ This script runs the unnormalized version of the nonlocal logistic model. Howeve
 
 That means:
 
-`mu``is  $\mu = \alpha R^2/D$
+  input : `mu` is  $$\mu = \frac{\alpha R^2}{D}$$
+  input : `pe` is  $$Pe = \frac{v_0 R^2}{D}$$
+
 
 - Initialization of parameters and variables.
 - Definition of the logistic equation.
