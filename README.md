@@ -1,8 +1,12 @@
 
 # Shear and Environmental Flow
 
-This project is a numerical integration of partial differential equations (PDEs) using a pseudospectral approach and the Runge-Kutta 4th order (RK4) method. The code is part of the research for the paper [Title in blank].
+This project is a numerical integration of partial differential equations (PDEs) using a pseudospectral approach and the Runge-Kutta 4th order (RK4) method. The code is part of the research for the paper
+**_Flow spatial structure determines pattern instabilities in nonlocal models of population dynamics._**
 
+[//]: # ([![DOI]&#40;https://zenodo.org/badge/975705705.svg&#41;]&#40;https://doi.org/10.5281/zenodo.15312822&#41;)
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![ArXiv](https://img.shields.io/badge/ArXiv-2409.04268-b31b1b)](https://arxiv.org/abs/2409.04268)
 ## Project Structure
 
 - `Vegetation/Codes/_NonLocal_FC.py`: Contains the implementation of the vegetation model.
