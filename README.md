@@ -7,6 +7,18 @@ This project is a numerical integration of partial differential equations (PDEs)
 [//]: # ([![DOI]&#40;https://zenodo.org/badge/975705705.svg&#41;]&#40;https://doi.org/10.5281/zenodo.15312822&#41;)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![ArXiv](https://img.shields.io/badge/ArXiv-2409.04268-b31b1b)](https://arxiv.org/abs/2409.04268)
+
+
+## Autorship
+
+#### Authors:
+- Nathan O. Silvano (maintainer)
+- Joao Valeriano
+- Emilio Hernandez-Garcia
+- Cristobal Lopez
+- Ricardo Martinez-Garcia
+
+
 ## Project Structure
 
 - `Vegetation/Codes/_NonLocal_FC.py`: Contains the implementation of the vegetation model.
@@ -48,7 +60,7 @@ Each script should be run individually and they have input parameters:
 
 - _NonLocal_FC.py:
   - mu: decay ratio
-  - delta: enhancing constants difference (\chi_f - \chi_c)
+  - delta: enhancing constants difference ($\chi_f - \chi_c$)
   - flowtype:
     - sinusoidal, rankine, parabolic, cellular, point vortex, constant
   - pe: is the Peclet number (advection rate)
@@ -60,10 +72,23 @@ python Logistic/Codes/LogisticV1.py mu pe flowtype
 
 ## Description
 
-The base output of the code is a figure showing the Spatial Pattern Distribution.
+### Generating Figures
+
+The base output of the code without any modification is a figure showing the Spatial Pattern Distribution.
 This figure is refreshed every 2000 time steps.
+
+Like the example below:
+
+<img src="Vegetation/Figures/fig  0.png" alt="Example Output" width="600"/>
+
 If you want to save the data, you should uncomment the final lines of the code and choose if you want to save the field distribution or only the Density time series.
 
+The left side shows the spatial distribution, while the right side shows the Integral of Density /L^2 x Time plot
+
+
+This is the basis output for both Vegetation and Logistic models.
+
+In case you want to save the data, you can uncomment the last lines of the code and choose whether to save the field distribution or only the density time series.
 
 ### _NonLocal_FC.py
 
