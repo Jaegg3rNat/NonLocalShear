@@ -92,14 +92,14 @@ In case you want to save the data, you can uncomment the last lines of the code 
 
 ### _NonLocal_FC.py
 
-This script performs the numerical integration of Eqs. 2.16 of the paper, using a pseudospectral approach and RK4. It includes the following steps:
+This script performs the numerical integration of Eqs. 2.16 of the paper, using a pseudospectral approach and RK4.
 Is the unnormalized version of the vegetation model. 
 
 Therefore the `mu` parameter is defined from (0,1). `mu > 1` is not defined.
 
-`delta` is the \lambda parameter defined in the paper.
+`delta` is the $\lambda$ parameter defined in the paper.
 
-`pe` in this model is not the Peclet number, but the advection rate.
+`pe` in this model is not the Peclet number, but the advection rate (or flow intensisty $v_0$).
 
 - Initialization of parameters and variables.
 - Definition of the equilibrium solution using symbolic mathematics.
@@ -113,8 +113,8 @@ This script implements the logistic model for the given problem. It includes:
 
 This script runs the unnormalized version of the nonlocal logistic model. However it uses as input the normalize parameters defined in the paper.
 
-`mu` is the Damkholer number (normalize growth rate) defined in the paper.
-`pe` is the Peclet number (normlazid advection rate).
+`mu` is the Damkholer number (normalized growth rate) defined in the paper.
+`pe` is the Peclet number (normalized advection rate).
 
 That means:
 
