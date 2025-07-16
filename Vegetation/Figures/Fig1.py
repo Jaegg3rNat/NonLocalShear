@@ -25,14 +25,16 @@ axL = subfigs[0].subplots(1, 1, sharey=True)
 
 # Read data from file
 # loadtxt homogeneous
-mu_values, ubar_pos, ubar_neg = np.loadtxt(f'../Data/ubar_values{lamb:.4f}.dat', unpack=True)
+base_folder1 = f"/data/workspaces/nathan/SDF"
+mu_values, ubar_pos, ubar_neg = np.loadtxt(f'{base_folder1}/ubar_values{lamb:.4f}.dat', unpack=True)
 ubar_pos = np.maximum(0, ubar_pos)
 # plot homogeneous
 
 print(mu_values)
 
 # Data of non-local model
-base_folder = f"../Data/lambda_{lamb}"
+# base_folder = f"../Data/lambda_{lamb}"
+base_folder = f"/data/workspaces/nathan/SDF/lambda{lamb}/128_eps{eps:.3f}"
 rho_ = []
 mu_list = np.arange(0.7844, 0.798, 0.0002)
 mu_list = np.append(mu_list, np.arange(0.8, 1., 0.002))
@@ -72,24 +74,24 @@ axL.set_ylim([0.85, 1.35])
 plt.legend()
 axL.set_ylabel('Normalized Population Abundance, ' r'$A$', fontsize=13)
 #
-axL.text(x=0.868 / (D / rc ** 2), y=1.2, s=r' C ', fontsize=12, color='k', ha='center',
-         bbox={'facecolor': 'ghostwhite', 'alpha': 0.8, 'edgecolor': 'gray', 'boxstyle': 'round,pad=0.25'})
-axL.text(x=0.808 / (D / rc ** 2), y=1.15, s=r'B', fontsize=12, color='k', ha='center',
-         bbox={'facecolor': 'ghostwhite', 'alpha': 0.8, 'edgecolor': 'gray', 'boxstyle': 'round,pad=0.25'})
-axL.text(x=0.929 / (D / rc ** 2), y=1.25, s=r'D', fontsize=12, color='k', ha='center',
-         bbox={'facecolor': 'ghostwhite', 'alpha': 0.8, 'edgecolor': 'gray', 'boxstyle': 'round,pad=0.25'})
+axL.text(x=0.868 / (D / rc ** 2), y=1.2, s=r'\textbf{c}', fontsize=12, color='k', ha='center',
+         bbox={'facecolor': 'white', 'alpha': 0.8, 'edgecolor': 'none', 'boxstyle': 'round,pad=0.'})
+axL.text(x=0.808 / (D / rc ** 2), y=1.15, s=r'\textbf{b}', fontsize=12, color='k', ha='center',
+         bbox={'facecolor': 'white', 'alpha': 0.8, 'edgecolor': 'none', 'boxstyle': 'round,pad=0.'})
+axL.text(x=0.929 / (D / rc ** 2), y=1.25, s=r'\textbf{d}', fontsize=12, color='k', ha='center',
+         bbox={'facecolor': 'white', 'alpha': 0.8, 'edgecolor': 'none', 'boxstyle': 'round,pad=0.'})
 # axL.text(x=( 0.766) / (D / rc ** 2), y=1.1, s=r'$\mathcal{H}^0$', fontsize=12, color='k', ha='center',
 #          bbox={'facecolor': 'ghostwhite', 'alpha': 0.8, 'edgecolor': 'gray', 'boxstyle': 'round,pad=0.25'})
 
-axL.text(x=newMu[0] - 4.1, y=1.35, s='A', fontweight='black', fontsize=13,
-         bbox=dict(facecolor='gainsboro', edgecolor='black', boxstyle='round,pad=0.25'))
+axL.text(x=newMu[0] - 4.1, y=1.37, s=r'\textbf{(a)}', fontweight='black', fontsize=13,
+         bbox=dict(facecolor='white', edgecolor='none', boxstyle='round,pad=0.'))
 #
 # ===========================================
 # ===========================================
 axR = subfigs[1].subplots(3, 1, sharey=False, sharex=True)
 #
 #
-base_folder = f"../Data/lambda_{lamb}"
+
 mu = 0.7906
 # # # Example usage
 file_path = f'{base_folder}/{flow}_Pe{pe:.1f}_mu{mu:.5f}/dat.h5'  # Change this to your .h5 file path
@@ -131,12 +133,12 @@ axR[0].set_ylabel(r'$y$', fontsize=15, rotation=90)
 axR[1].set_ylabel(r'$y$', fontsize=15, rotation=90)
 axR[2].set_ylabel(r'$y$', fontsize=15, rotation=90)
 
-axR[0].text(-0.5, 1. - 0.5, s='B', fontweight='black', fontsize=13,
-            bbox=dict(facecolor='gainsboro', edgecolor='black', boxstyle='round,pad=0.25'))
-axR[1].text(-0.5, 1. - 0.5, s='C', fontweight='black', fontsize=13,
-            bbox=dict(facecolor='gainsboro', edgecolor='black', boxstyle='round,pad=0.25'))
-axR[2].text(-0.5, 1. - 0.5, s='D', fontweight='black', fontsize=13,
-            bbox=dict(facecolor='gainsboro', edgecolor='black', boxstyle='round,pad=0.25'))
+axR[0].text(-0.5, 1.08 - 0.5, s=r'\textbf{(b)}', fontweight='black', fontsize=13,
+            bbox=dict(facecolor='white', edgecolor='none', boxstyle='round,pad=0.'))
+axR[1].text(-0.5, 1.08 - 0.5, s=r'\textbf{(c)}', fontweight='black', fontsize=13,
+            bbox=dict(facecolor='white', edgecolor='none', boxstyle='round,pad=0.'))
+axR[2].text(-0.5, 1.08 - 0.5, s=r'\textbf{(d)}', fontweight='black', fontsize=13,
+            bbox=dict(facecolor='white', edgecolor='none', boxstyle='round,pad=0.'))
 # plt.show()
 
 

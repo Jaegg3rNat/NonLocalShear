@@ -164,41 +164,68 @@ gradient_magnitude = np.sqrt(dZdx ** 2 + dZdy ** 2)
 import matplotlib.colors as mcolors
 
 
-def create_custom_colormap(vmin, vmax, value_white, n_colors=256):
-    """
-    Create a colormap where:
-    - value_white is white (default 1.0)
-    - Values below value_white are light blue gradient
-    - Values above value_white are red gradient
+# def create_custom_colormap(vmin, vmax, value_white, n_colors=256):
+#     """
+#     Create a colormap where:
+#     - value_white is white (default 1.0)
+#     - Values below value_white are light blue gradient
+#     - Values above value_white are red gradient
+#
+#     Parameters:
+#     - vmin: minimum value in data
+#     - vmax: maximum value in data
+#     - value_white: value that should be white (default 1.0)
+#     - n_colors: number of discrete colors in colormap
+#     """
+#     # Calculate relative position of white point
+#     white_pos = (value_white - vmin) / (vmax - vmin)
+#
+#     # Create colormap with:
+#     # - Below white: blues getting lighter until white
+#     # - Above white: reds getting stronger from white
+#     colors = [
+#                  plt.cm.Blues_r(x) for x in np.linspace(1 - white_pos, 1, int(n_colors * white_pos))
+#              ] + [
+#                  plt.cm.Reds(x) for x in np.linspace(0, 1., int(n_colors * (1 - white_pos)))
+#              ]
+#
+#     return mcolors.ListedColormap(colors)
+#
+#
+# # Example usage
+# vmin, vmax = np.min(rho_matrix), np.max(rho_matrix)  # Your data range
+# value_white = 1.0  # Value that should be white
+# # print(rho_matrix[0,:])
+#
+# # Create colormap and norm
+# cmap = create_custom_colormap(vmin, vmax, value_white)
+# norm = mcolors.Normalize(vmin=vmin, vmax=vmax)
+def create_custom_colormap_with_white_band(vmin, vmax, white_start=1.0, white_end=1.02, n_colors=256):
+    assert vmin < white_start < white_end < vmax, "white range must be within data range"
 
-    Parameters:
-    - vmin: minimum value in data
-    - vmax: maximum value in data
-    - value_white: value that should be white (default 1.0)
-    - n_colors: number of discrete colors in colormap
-    """
-    # Calculate relative position of white point
-    white_pos = (value_white - vmin) / (vmax - vmin)
+    # Compute relative positions
+    rel_white_start = (white_start - vmin) / (vmax - vmin)
+    rel_white_end = (white_end - vmin) / (vmax - vmin)
 
-    # Create colormap with:
-    # - Below white: blues getting lighter until white
-    # - Above white: reds getting stronger from white
-    colors = [
-                 plt.cm.Blues_r(x) for x in np.linspace(1 - white_pos, 1, int(n_colors * white_pos))
-             ] + [
-                 plt.cm.Reds(x) for x in np.linspace(0, 1., int(n_colors * (1 - white_pos)))
-             ]
+    n_blues = int(n_colors * rel_white_start)
+    n_white = int(n_colors * (rel_white_end - rel_white_start))
+    n_reds = n_colors - n_blues - n_white
 
+    # Colormaps
+    blues = [plt.cm.Blues_r(x) for x in np.linspace(0.3, 1, n_blues)]
+    whites = [(1.0, 1.0, 1.0, 1.0)] * n_white
+    reds = [plt.cm.Reds(x) for x in np.linspace(0, 1, n_reds)]
+
+    colors = blues + whites + reds
     return mcolors.ListedColormap(colors)
 
-
 # Example usage
-vmin, vmax = np.min(rho_matrix), np.max(rho_matrix)  # Your data range
-value_white = 1.0  # Value that should be white
-# print(rho_matrix[0,:])
+vmin = np.min(rho_matrix)
+vmax = 1.+ 1-vmin
+white_start = 1.0
+white_end = 1.0005
 
-# Create colormap and norm
-cmap = create_custom_colormap(vmin, vmax, value_white)
+cmap = create_custom_colormap_with_white_band(vmin, vmax, white_start, white_end)
 norm = mcolors.Normalize(vmin=vmin, vmax=vmax)
 
 
@@ -230,16 +257,16 @@ axn, bxn, cxn, dxn = (ax) / (D / rc ** 2), (bx) / (D / rc ** 2), (cx) / (D / rc 
 ayn, byn, cyn, dyn = ay * rc, by * rc, cy * rc, dy * rc
 print(axn,bxn,cxn,dxn)
 print(ayn, byn, cyn, dyn)
-plt.text(axn, ayn, s='B',
+plt.text(axn, ayn, s=r'\textbf{b}', fontsize=13,
          color='k')  # ,bbox={'facecolor':'limegreen','alpha':0.8,'edgecolor':'none','boxstyle':'round,pad=0.25'},
 # ha='center', va='center')
-plt.text(bxn, byn, s='C',
+plt.text(bxn, byn, s=r'\textbf{c}', fontsize=13,
          color='k')  # ,bbox={'facecolor':'limegreen','alpha':0.8,'edgecolor':'none','boxstyle':'round,pad=0.25'},
 # ha='center', va='center')
-plt.text(cxn, cyn, s='D',
+plt.text(cxn, cyn, s=r'\textbf{d}', fontsize=13,
          color='k')  # ,bbox={'facecolor':'limegreen','alpha':0.8,'edgecolor':'none','boxstyle':'round,pad=0.25'},
 # ha='center', va='center')
-plt.text(dxn, dyn, s='E',
+plt.text(dxn, dyn, s=r'\textbf{e}', fontsize=13,
          color='k')  # ,bbox={'facecolor':'limegreen','alpha':0.8,'edgecolor':'none','boxstyle':'round,pad=0.25'},
 # ha='center', va='center')
 #
@@ -291,16 +318,16 @@ cbar.set_label('Normalized population density', rotation=270, fontsize=12, label
 #
 # axR[0,0].text(-4.-0.5, 1.15-0.5, s='I', fontweight='black',
 #                  bbox=dict(facecolor='gainsboro', edgecolor='black', boxstyle='round,pad=0.25'))
-axR[0, 0].text(-0.5, 1. - 0.5, s='B', fontweight='black', fontsize=13,
-               bbox=dict(facecolor='gainsboro', edgecolor='black', boxstyle='round,pad=0.25'))
-axR[0, 1].text(-0.5, 1. - 0.5, s='C', fontweight='black', fontsize=13,
-               bbox=dict(facecolor='gainsboro', edgecolor='black', boxstyle='round,pad=0.25'))
-axR[1, 0].text(-0.5, 1. - 0.5, s='D', fontweight='black', fontsize=13,
-               bbox=dict(facecolor='gainsboro', edgecolor='black', boxstyle='round,pad=0.25'))
-axR[1, 1].text(-0.5, 1. - 0.5, s='E', fontweight='black', fontsize=13,
-               bbox=dict(facecolor='gainsboro', edgecolor='black', boxstyle='round,pad=0.25'))
-axL.text(newmu_list[0], newPe[-1] + 0.5, s='A', fontweight='black', fontsize=13,
-         bbox=dict(facecolor='gainsboro', edgecolor='black', boxstyle='round,pad=0.25'))
+axR[0, 0].text(-0.5, 1.08 - 0.5, s=r'\textbf{(b)}', fontweight='black', fontsize=13,
+               bbox=dict(facecolor='white', edgecolor='none', boxstyle='round,pad=0.'))
+axR[0, 1].text(-0.5, 1.08 - 0.5, s=r'\textbf{(c)}', fontweight='black', fontsize=13,
+               bbox=dict(facecolor='white', edgecolor='none', boxstyle='round,pad=0.'))
+axR[1, 0].text(-0.5, 1.07 - 0.5, s=r'\textbf{(d)}', fontweight='black', fontsize=13,
+               bbox=dict(facecolor='white', edgecolor='none', boxstyle='round,pad=0.'))
+axR[1, 1].text(-0.5, 1.07 - 0.5, s=r'\textbf{(e)}', fontweight='black', fontsize=13,
+               bbox=dict(facecolor='white', edgecolor='none', boxstyle='round,pad=0.'))
+axL.text(newmu_list[0], newPe[-1] + 1, s=r'\textbf{(a)}', fontweight='black', fontsize=13,
+         bbox=dict(facecolor='white', edgecolor='none', boxstyle='round,pad=0.'))
 
 # #
 # axR[1, 0].set_xlabel(r'$x$', fontsize=15)

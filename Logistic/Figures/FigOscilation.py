@@ -8,7 +8,8 @@ from matplotlib import rc
 
 
 def carrying_cap(mu, pe):
-    f = h5py.File(f'../Data/Sine_old/mu{mu:.2f}_w{2 * np.pi:.2f}_Pe{pe:.1f}/dat.h5', 'r')
+    base_folder = f"/data/workspaces/nathan/Logistic/Sine_old"
+    f = h5py.File(f'{base_folder}/mu{mu:.2f}_w{2 * np.pi:.2f}_Pe{pe:.1f}/dat.h5', 'r')
     D = 1e-4
     comp_rad = 0.2
     k = f['conc2'][:] / (mu * D / comp_rad ** 2)
@@ -17,7 +18,8 @@ def carrying_cap(mu, pe):
 
 
 def func(mu, pe):
-    f = h5py.File(f'../Data/Sine_old/mu{mu:.2f}_w{2 * np.pi:.2f}_Pe{pe:.1f}/dat.h5', 'r')
+    base_folder = f"/data/workspaces/nathan/Logistic/Sine_old"
+    f = h5py.File(f'{base_folder}/mu{mu:.2f}_w{2 * np.pi:.2f}_Pe{pe:.1f}/dat.h5', 'r')
     time = f['time'][-1]
     D = 1e-4
     comp_rad = 0.2
@@ -82,8 +84,8 @@ axsnest0.set_xlabel('Simulation time', fontsize=12)
 axsnest0.set_ylabel('Normalized \n Population Abundance', fontsize=10, rotation=90)
 axsnest0.set_ylim([0.8, 1.8])
 axsnest0.set_xlim([0, 2000])
-axsnest0.text(-150, 1.9, s='A', fontweight='black',
-              bbox=dict(facecolor='gainsboro', edgecolor='black', boxstyle='round,pad=0.25'))
+axsnest0.text(-150, 1.9, s=r'\textbf{(a)}', fontweight='black',
+              bbox=dict(facecolor='white', edgecolor='none', boxstyle='round,pad=0.25'))
 font = {'family': 'serif',
         'weight': 'normal',
         'size': 11,
@@ -120,8 +122,8 @@ axsnest1.set_ylim([0.05, 1e3])
 axsnest1.set_xlim([0, 1])
 axsnest1.set_xlabel(r'Frequency, $\omega$', fontsize=12)
 axsnest1.set_ylabel('Power spectrum of \n population abundance', fontsize=12, rotation=90)
-axsnest1.text(3*0.001,   3*1e3, s='B', fontweight='black',
-              bbox=dict(facecolor='gainsboro', edgecolor='black', boxstyle='round,pad=0.25'))
+axsnest1.text(3*0.001,   3*1e3, s=r'\textbf{(b)}', fontweight='black',
+              bbox=dict(facecolor='white', edgecolor='none', boxstyle='round,pad=0.25'))
 
 # axsnest1.legend(handles=[line11, line22, line33])
 #
@@ -142,8 +144,8 @@ for p in pe_list:
 
 line, = axR.plot(pe_list, freq_anal, '--', color='k', label='Analytical')
 line1, = axR.plot(pe_list, freq_sim, 'o', color='b', label='Fourier')
-axR.text(-1, 0.3, s='C', fontweight='black',
-         bbox=dict(facecolor='gainsboro', edgecolor='black', boxstyle='round,pad=0.25'))
+axR.text(-1, 0.3, s=r'\textbf{(c)}', fontweight='black',
+         bbox=dict(facecolor='white', edgecolor='none', boxstyle='round,pad=0.25'))
 axR.legend(handles=[line, line1], prop=font)
 #
 # freq_sim = []

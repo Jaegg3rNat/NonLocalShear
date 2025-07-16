@@ -527,7 +527,7 @@ for g in gamma:
         # Track time and Density each dt
         vec_time.append(t[n])
         density2.append(np.mean(u))
-        h5file.create_dataset(f"t{t[n]}", data=u)
+        # h5file.create_dataset(f"t{t[n]}", data=u)
 
         if n % 2000 == 0:
             # # Save data set configuration
@@ -568,7 +568,7 @@ for g in gamma:
         #     break
 
     # # save results
-    # h5file.create_dataset("time", data=vec_time)
-    # # h5file.create_dataset("tot_density", data=total_density)
-    # h5file.create_dataset("density", data=density2)
-    # h5file.close()
+    h5file.create_dataset("time", data=vec_time)
+    h5file.create_dataset("tot_density", data=total_density)
+    h5file.create_dataset("density", data=density2)
+    h5file.close()

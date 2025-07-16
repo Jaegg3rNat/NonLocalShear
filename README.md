@@ -3,8 +3,9 @@
 
 This project is a numerical integration of partial differential equations (PDEs) using a pseudospectral approach and the Runge-Kutta 4th order (RK4) method. The code is part of the research for the paper
 **_Flow spatial structure determines pattern instabilities in nonlocal models of population dynamics._**
+Published in *Communication Physics*.
 
-[//]: # ([![DOI]&#40;https://zenodo.org/badge/975705705.svg&#41;]&#40;https://doi.org/10.5281/zenodo.15312822&#41;)
+[//]:  ([![DOI]&#40;https://zenodo.org/badge/975705705.svg&#41;]&#40;https://doi.org/10.5281/zenodo.15312822&#41;)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![ArXiv](https://img.shields.io/badge/ArXiv-2409.04268-b31b1b)](https://arxiv.org/abs/2409.04268)
 
@@ -127,6 +128,29 @@ That means:
 - Numerical integration using the RK4 method.
 - Saving results and plotting the configuration at specified intervals.
 
+## Acknowledgments
+
+This work was partially funded by the Center of Advanced Systems Understanding (CASUS), which is financed by Germany’s Federal Ministry of Education and Research (BMBF) and by the Saxon Ministry for Science, Culture and Tourism (SMWK) with tax funds on the basis of the budget approved by the Saxon State Parliament. N.O.S was partially supported by Coordenação de Aperfeiçoamento de Pessoal de Nível Superior (CAPES) - Finance Code 001 and by the CAPES-Print program through a sandwich doctoral fellowship at CASUS. RMG and JV were partially supported by FAPESP through a BIOTA Jovem Pesquisador Grant 2019/05523-8 (RMG and JV), ICTP-SAIFR grant 2021/14335-0 (RMG), and a Master's fellowship 2020/14169-0 (JV). RMG acknowledges support from Instituto Serrapilheira (Serra-1911-31200). C.L. and E.H-G were supported by grants LAMARCA PID2021-123352OB-C32 funded by MCIN/AEI/10.13039/501100011033323 and FEDER "Una manera de hacer Europa"; and TED2021-131836B-I00 funded by MICIU/AEI/\,\newline
+10.13039/501100011033 and by the European Union "NextGenerationEU/PRTR". 
+E.H-G. and N.O.S. also acknowledge the Maria de Maeztu program for Units of Excellence, CEX2021-001164-M funded by MCIN/AEI/10.13039/501100011033. C.L. was partially supported by the Scultetus Center Visiting Scientist Program at CASUS.
+
 ## License
 
 This project is licensed under the MIT License.
+
+Copyright (c) 2025 Nathan O. Silvano
+
+## Citation
+ If you use this code, please cite the original paper as:
+ 
+```
+ @article{ your2025paper,
+    title={Flow spatial structure determines pattern instabilities in nonlocal models of population dynamics.},
+    author={Your Name and Coauthor Name}, 
+    journal={Journal Name},
+    volume={10},
+    number={2},
+    pages={100--120},
+    year={2025},
+    publisher={Publisher} }
+```

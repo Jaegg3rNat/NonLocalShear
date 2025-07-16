@@ -8,7 +8,8 @@ from matplotlib import rc
 
 
 def carrying_cap(mu, pe):
-    f = h5py.File(f'../Codes/simulation_results/128_R0.2/rankine_mu{mu:.2f}_Pe{pe:.1f}_w{0:.2f}/dat.h5', 'r')
+    base_folder = f"/data/workspaces/nathan/Logistic/q_0.05Data"
+    f = h5py.File(f'{base_folder}/rankine_mu{mu:.2f}_Pe{pe:.1f}_w{0:.2f}/dat.h5', 'r')
     D = 1e-4
     comp_rad = 0.2
     k = f['density'][:] / (mu * D / comp_rad ** 2)
@@ -73,19 +74,19 @@ t4, c4 = carrying_cap(mu, p4)
 
 # colors = ['#00008B', '#0000CD', '#4682B4', '#6495ED', '#00BFFF', '#87CEFA']
 colors = ['#003f5c', '#444e86', '#955196', '#dd5182', '#ff6e54', '#ffa600']
-line0, = axsnest0.plot(t0, c0, color=colors[0], label=r'$\mbox{Pe} = 0$')
-line1, = axsnest0.plot(t1, c1, color=colors[1], label=r'$\mbox{Pe} =$' f' {p1:.0f}')
-line2, = axsnest0.plot(t2, c2, color=colors[2], label=r'$\mbox{Pe} =$' f' {p2:.0f}')
-line3, = axsnest0.plot(t3, c3, color=colors[3], label=r'$\mbox{Pe} =$' f' {p3:.0f}')
-line4, = axsnest0.plot(t4, c4, color=colors[4], label=r'$\mbox{Pe} =$' f' {p4:.0f}')
+line0, = axsnest0.plot(t0, c0, color=colors[0], label=r'$\mbox{Pe} = 0$', lw =1)
+line1, = axsnest0.plot(t1, c1, color=colors[1], label=r'$\mbox{Pe} =$' f' {p1:.0f}', lw =0.8)
+line2, = axsnest0.plot(t2, c2, color=colors[2], label=r'$\mbox{Pe} =$' f' {p2:.0f}', lw =0.8)
+line3, = axsnest0.plot(t3, c3, color=colors[3], label=r'$\mbox{Pe} =$' f' {p3:.0f}', lw =0.8)
+line4, = axsnest0.plot(t4, c4, color=colors[4], label=r'$\mbox{Pe} =$' f' {p4:.0f}', lw =0.8)
 
 # details
 axsnest0.set_xlabel('Simulation time', fontsize=12)
 axsnest0.set_ylabel('Normalized \n Population Abundance', fontsize=10, rotation=90)
 axsnest0.set_ylim([1., 1.8])
-axsnest0.set_xlim([8000, 10000])
-axsnest0.text(8000, 1.81, s='A', fontweight='black',
-              bbox=dict(facecolor='gainsboro', edgecolor='black', boxstyle='round,pad=0.25'))
+axsnest0.set_xlim([0000, 5000])
+axsnest0.text(0000, 1.85, s=r'\textbf{(a)}', fontweight='black',
+              bbox=dict(facecolor='white', edgecolor='none', boxstyle='round,pad=0.25'))
 # font = {'family': 'serif',
 #         'weight': 'normal',
 #         'size': 11,
@@ -93,45 +94,46 @@ axsnest0.text(8000, 1.81, s='A', fontweight='black',
 axsnest0.legend(handles=[line0, line1, line2, line3, line4], ncol=3, fontsize=7, loc=2)
 
 axin1 = axsnest0.inset_axes([0.7, 0.83, 0.2, 0.3])
-axin1.plot(t1, c1, color=colors[1])
-axin1.plot(t2, c2, color=colors[2])
-axin1.plot(t3, c3, color=colors[3])
-axin1.plot(t4, c4, color=colors[4])
+axin1.plot(t1, c1, color=colors[1], lw =0.8)
+axin1.plot(t2, c2, color=colors[2], lw =0.8)
+axin1.plot(t3, c3, color=colors[3], lw =0.8)
+axin1.plot(t4, c4, color=colors[4], lw =0.8)
 axin1.set_ylim([1.15, 1.6])
-axin1.set_xlim([9750, 10000])
+axin1.set_xlim([4600, 5000])
 axin1.xaxis.set_tick_params(labelsize=6)
 axin1.yaxis.set_tick_params(labelsize=6)
 axsnest0.indicate_inset_zoom(axin1)
 
 # BOTTOM: FOURIER TRANSFORM
 
-l1 = 30000
-step = int(1 / 0.01)  # This will be 5 in your case
+l1 = 50000
+step = int(3 / 0.01)  # This will be 5 in your case
 
-fk = fftpack.fft(c1[-2*l1::step])
+fk = fftpack.fft(c1[-2*l1:])
 fk = abs(fk)
-q = fftpack.fftfreq(len(c1[-2*l1::step]), 1)
+q = fftpack.fftfreq(len(c1[-2*l1:]), 0.01)
 
 fk1 = fftpack.fft(c2[-l1:])
 q1 = fftpack.fftfreq(len(c2[-l1:]), 0.01)
-
+l1 = 40000
 fk2 = fftpack.fft(c3[-l1:])
 q2 = fftpack.fftfreq(len(c3[-l1:]), 0.01)
+l1 = 20000
 fk3 = fftpack.fft(c4[-l1:])
 fk3 = abs(fk3)
 q3 = fftpack.fftfreq(len(c4[-l1:]), 0.01)
 #
 line11, = axsnest1.loglog(q[:int(len(q) / 2)], fk[:int(len(q) / 2)], '.-', color=colors[1],
-                          label=f'$P_e = {p1:.0f}$')
-line22, = axsnest1.loglog(q1[:int(len(q1) / 2)], abs(fk1)[:int(len(q1) / 2)], '.-', color=colors[2],
-                          label=f'$P_e = {p2:.0f}$')
-# line33, = axsnest1.loglog(q2[:int(len(q2) / 2)], abs(fk2)[:int(len(q2) / 2)], '.-', color=colors[3],
-#                           label=f'$P_e = {p3:.0f}$')
+                          label=f'$P_e = {p1:.0f}$', lw =0.8,markersize = 3)
+# line22, = axsnest1.loglog(q1[:int(len(q1) / 2)], abs(fk1)[:int(len(q1) / 2)], '.-', color=colors[2],
+#                           label=f'$P_e = {p2:.0f}$', lw =0.8,markersize = 3)
+line33, = axsnest1.loglog(q2[:int(len(q2) / 2)], abs(fk2)[:int(len(q2) / 2)], '.-', color=colors[3],
+                          label=f'$P_e = {p3:.0f}$', lw =0.8,markersize = 3)
 line44, = axsnest1.loglog(q2[:int(len(q3) / 2)], fk3[:int(len(q3) / 2)], '.-', color=colors[4],
-                          label=f'$P_e = {p4:.0f}$')
+                          label=f'$P_e = {p4:.0f}$', lw =0.8,markersize = 3)
 # #details
-# axsnest1.set_ylim([0.1, 7000])
-# axsnest1.set_xlim([0.0005, 0.2])
+axsnest1.set_ylim([1, 7000])
+axsnest1.set_xlim([0.0008, 0.08])
 # xticks = [0.001, 0.002, 0.003, 0.004, 0.005]
 # axsnest1.set_xticks(xticks)
 # axsnest1.set_xticklabels([f"{tick*1000:.0f}e-3" for tick in xticks], fontsize=8)
@@ -139,8 +141,8 @@ line44, = axsnest1.loglog(q2[:int(len(q3) / 2)], fk3[:int(len(q3) / 2)], '.-', c
 axsnest1.set_xlabel('Frequency, $\omega$', fontsize=12)
 axsnest1.set_ylabel('Power spectrum of \n population abundance', fontsize=12, rotation=90)
 
-# axsnest1.text(5* 1e-4, 7 * 1e3, s='B', fontweight='black',
-#               bbox=dict(facecolor='gainsboro', edgecolor='black', boxstyle='round,pad=0.25'))
+axsnest1.text(8* 1e-4, 12* 1e3, s=r'\textbf{(b)}', fontweight='black',
+              bbox=dict(facecolor='white', edgecolor='none', boxstyle='round,pad=0.25'))
 
 # axsnest1.legend(handles=[line11, line22, line33],loc = 1)
 
