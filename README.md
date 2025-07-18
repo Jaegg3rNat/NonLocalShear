@@ -44,7 +44,7 @@ The following packages are necessary to run the code:
 - `tqdm`: For displaying progress bars.
 - `numba`: For JIT compilation to speed up the code.
 
-It is also required to have a Python version >= 3.6.
+It is also required to have a Python version 3.6+.
 
 ## Installation
 
@@ -59,18 +59,18 @@ pip install numpy scipy sympy matplotlib h5py tqdm numba
 To run the code, navigate to the directory containing the scripts and execute them using Python:
 Each script should be run individually and they have input parameters:
 - LogisticV1.py:
-  - mu: is the Damkholer number (growth rate)
-  - pe: is the Peclet number (advection rate)
-  - flowtype: Stationary flow choosen to apply
+  - `mu`: is the Damkholer number (growth rate)
+  -  `pe`: is the Peclet number (advection rate)
+  - `flowtype`: Stationary flow choosen to apply
     - sinusoidal, rankine, parabolic, cellular, point vortex, constant
 
 
 - _NonLocal_FC.py:
-  - mu: decay ratio
-  - delta: enhancing constants difference ($\chi_f - \chi_c$)
-  - flowtype:
+  - `mu`: decay ratio
+  - `delta`: enhancing constants difference ($\chi_f - \chi_c$,  in the paper is defined as $\lambda$)
+  - `flowtype`:
     - sinusoidal, rankine, parabolic, cellular, point vortex, constant
-  - pe: is the Peclet number (advection rate)
+  - `pe`: is the Peclet number (advection rate)
     
 ```bash
 python Vegetation/Codes/_NonLocal_FC.py mu delta flowtype pe
@@ -84,11 +84,13 @@ python Logistic/Codes/LogisticV1.py mu pe flowtype
 The base output of the code without any modification is a figure showing the Spatial Pattern Distribution.
 This figure is refreshed every 2000 time steps.
 
-Like the example below:
+The example bellow is the typical output image of the standard code:
 
 <img src="Vegetation/Figures/fig  0.png" alt="Example Output" width="600"/>
 
-If you want to save the data, you should uncomment the final lines of the code and choose if you want to save the field distribution or only the Density time series.
+If you want to save the data to perform any further analysis,
+you should uncomment the final lines of the code and choose if you want to save the field distribution
+or only the Density time series. Adjust correctly after how many time step you want to save the data
 
 The left side shows the spatial distribution, while the right side shows the Integral of Density /L^2 x Time plot
 
@@ -150,13 +152,20 @@ Copyright (c) 2025 Nathan O. Silvano
  If you use this code, please cite the original paper as:
  
 ```
- @article{ your2025paper,
-    title={Flow spatial structure determines pattern instabilities in nonlocal models of population dynamics.},
-    author={Your Name and Coauthor Name}, 
-    journal={Journal Name},
-    volume={10},
-    number={2},
-    pages={100--120},
-    year={2025},
-    publisher={Publisher} }
+ @misc{silvano_2025_16080825,
+  author       = {Silvano, Nathan and
+                  Valeriano, Joao and
+                  Hernández-García, Emilio and
+                  Lopez, Cristobal and
+                  Martinez-Garcia, Ricardo},
+  title        = {Flow spatial structure determines pattern
+                   instabilities in nonlocal models of population
+                   dynamics},
+  month        = jul,
+  year         = 2025,
+  publisher    = {Zenodo},
+  version      = {v1.0.0},
+  doi          = {10.5281/zenodo.16080825},
+  url          = {https://doi.org/10.5281/zenodo.16080825},
+}
 ```
