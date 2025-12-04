@@ -11,6 +11,9 @@ Published in *Communication Physics*.
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.16080825.svg)](https://doi.org/10.5281/zenodo.16080825)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![ArXiv](https://img.shields.io/badge/ArXiv-2409.04268-b31b1b)](https://arxiv.org/abs/2409.04268)
+[![Communication Physics](https://img.shields.io/badge/Communication%20Physics-Nature-red?style=for-the-badge&logo=nature&logoColor=white)](https://www.nature.com/articles/s42005-025-02246-3)
+
+
 
 [![Python Version](https://img.shields.io/badge/Python-3.6%2B-FFD43B.svg)](https://www.python.org/)
 
