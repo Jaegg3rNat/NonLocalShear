@@ -19,7 +19,7 @@ Published in *Communication Physics*.
 
 
 
-## Autorship
+## Authorship
 
 #### Authors:
 - Nathan O. Silvano (maintainer)
